@@ -47,7 +47,16 @@ export const POST: APIRoute = async ({ params, request, cookies, redirect }) => 
 
   const now = new Date();
   const borrowDate = now.toISOString();
-  const dueDate = calculateDueDate(now, 7);
+
+  // Hitung kembali tanggal jatuh tempo berdasarkan durasi yang diajukan sebelumnya (1 - 10 hari)
+  const dDue = new Date(borrowing.dueDate);
+  const dBorrow = new Date(borrowing.borrowDate);
+  dDue.setHours(0, 0, 0, 0);
+  dBorrow.setHours(0, 0, 0, 0);
+  const diffTime = dDue.getTime() - dBorrow.getTime();
+  const diffDays = Math.max(1, Math.min(10, Math.round(diffTime / (24 * 60 * 60 * 1000)))) || 7;
+
+  const dueDate = calculateDueDate(now, diffDays);
 
   // Approve: update status to 'borrowed', set borrowDate & end-of-day dueDate, and decrease stock by 1
   await db.update(schema.borrowings)

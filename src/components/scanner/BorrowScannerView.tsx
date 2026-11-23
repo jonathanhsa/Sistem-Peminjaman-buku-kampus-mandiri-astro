@@ -351,8 +351,8 @@ export const BorrowScannerView: React.FC<BorrowScannerViewProps> = ({
               <span className="font-semibold text-gray-800">{currentUser.name} ({currentUser.nim_nip})</span>
             </div>
             <div className="flex items-center justify-between text-[11px]">
-              <span>Durasi Standar:</span>
-              <span className="font-semibold text-gray-800">7 Hari Kalender</span>
+              <span>Durasi Peminjaman:</span>
+              <span className="font-semibold text-gray-800">Fleksibel (Maks. 10 Hari)</span>
             </div>
             <div className="flex items-center justify-between text-[11px]">
               <span>Denda Keterlambatan:</span>

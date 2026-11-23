@@ -12,6 +12,8 @@ import {
   Calendar,
   Sparkles,
   User,
+  Minus,
+  Plus,
 } from 'lucide-react';
 
 export interface BorrowConfirmFormProps {
@@ -81,6 +83,7 @@ export const BorrowConfirmForm: React.FC<BorrowConfirmFormProps> = ({
   activeLoansCount = 0,
 }) => {
   const [notes, setNotes] = useState('');
+  const [durationDays, setDurationDays] = useState(3);
   const [agreement, setAgreement] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -88,7 +91,8 @@ export const BorrowConfirmForm: React.FC<BorrowConfirmFormProps> = ({
 
   const [nowDate] = useState(() => new Date());
   const borrowTime = formatIndonesianDate(nowDate);
-  const dueDateTime = new Date(nowDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+  const dueDateTime = new Date(nowDate);
+  dueDateTime.setDate(dueDateTime.getDate() + durationDays);
   dueDateTime.setHours(17, 0, 0, 0);
   const returnTime = formatIndonesianDate(dueDateTime);
 
@@ -108,6 +112,7 @@ export const BorrowConfirmForm: React.FC<BorrowConfirmFormProps> = ({
         body: JSON.stringify({
           itemCode: item.item_code,
           notes: notes.trim(),
+          durationDays,
         }),
       });
 
@@ -323,6 +328,85 @@ export const BorrowConfirmForm: React.FC<BorrowConfirmFormProps> = ({
               </div>
             </div>
 
+            {/* Pilihan Durasi Peminjaman (Fleksibel, Maksimal 10 Hari) */}
+            <div className="space-y-2.5">
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-semibold text-gray-700 flex items-center gap-1.5">
+                  <Calendar className="w-4 h-4 text-gray-400" />
+                  <span>Durasi Peminjaman</span>
+                </label>
+                <span className="text-[11px] font-medium text-gray-500">
+                  Maksimal <strong className="text-gray-800">10 Hari</strong>
+                </span>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                {/* Stepper Counter */}
+                <div className="flex items-center justify-between sm:justify-start border border-gray-200/90 rounded-2xl bg-surface-tint/60 p-1">
+                  <button
+                    type="button"
+                    onClick={() => setDurationDays((prev) => Math.max(1, prev - 1))}
+                    disabled={durationDays <= 1}
+                    aria-label="Kurangi 1 hari"
+                    className="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-gray-600 hover:bg-white hover:text-primary hover:shadow-2xs disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gray-600 disabled:cursor-not-allowed transition cursor-pointer"
+                  >
+                    <Minus className="w-3.5 h-3.5" />
+                  </button>
+
+                  <div className="px-3 flex items-center justify-center min-w-[5.5rem]">
+                    <input
+                      type="number"
+                      min={1}
+                      max={10}
+                      value={durationDays}
+                      onChange={(e) => {
+                        const val = parseInt(e.target.value, 10);
+                        if (isNaN(val)) {
+                          setDurationDays(1);
+                        } else {
+                          setDurationDays(Math.max(1, Math.min(10, val)));
+                        }
+                      }}
+                      className="w-9 text-center font-extrabold text-ink bg-transparent focus:outline-none text-sm"
+                    />
+                    <span className="text-xs font-semibold text-gray-500">Hari</span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setDurationDays((prev) => Math.min(10, prev + 1))}
+                    disabled={durationDays >= 10}
+                    aria-label="Tambah 1 hari"
+                    className="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-gray-600 hover:bg-white hover:text-primary hover:shadow-2xs disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gray-600 disabled:cursor-not-allowed transition cursor-pointer"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                {/* Preset Chips */}
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {[1, 3, 5, 7, 10].map((d) => (
+                    <button
+                      key={d}
+                      type="button"
+                      onClick={() => setDurationDays(d)}
+                      className={`text-[11px] px-3 py-2 rounded-xl border transition cursor-pointer font-semibold ${
+                        durationDays === d
+                          ? 'bg-primary text-white border-primary shadow-xs'
+                          : 'bg-white text-gray-600 border-gray-200 hover:border-primary hover:text-primary'
+                      }`}
+                    >
+                      {d === 10 ? '10 Hari (Maks)' : `${d} Hari`}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <p className="text-[11px] text-gray-400">
+                Pilih atau masukkan lama peminjaman yang Anda butuhkan (1 sampai 10 hari kalender).
+              </p>
+            </div>
+
             {/* Jadwal Peminjaman & Batas Pengembalian */}
             <div className="space-y-2">
               <label className="block text-xs font-semibold text-gray-700 flex items-center gap-1.5">
@@ -345,7 +429,7 @@ export const BorrowConfirmForm: React.FC<BorrowConfirmFormProps> = ({
 
                 <div className="p-3.5 rounded-2xl bg-rose-50/50 border border-rose-100">
                   <span className="text-[10px] font-semibold text-primary uppercase tracking-wider block">
-                    Tenggat Kembali (7 Hari)
+                    Tenggat Kembali ({durationDays} Hari)
                   </span>
                   <p className="text-xs font-bold text-gray-900 mt-0.5">
                     {returnTime.dayName}, {returnTime.dateString}
@@ -498,9 +582,9 @@ export const BorrowConfirmForm: React.FC<BorrowConfirmFormProps> = ({
                 <div className="flex items-center justify-between">
                   <span className="flex items-center gap-1.5 text-gray-500">
                     <Calendar className="w-3.5 h-3.5 text-gray-400" />
-                    <span>Durasi Maksimal:</span>
+                    <span>Durasi Dipilih:</span>
                   </span>
-                  <span className="font-semibold text-gray-900">7 Hari Kalender</span>
+                  <span className="font-semibold text-gray-900">{durationDays} Hari Kalender</span>
                 </div>
 
                 <div className="flex items-center justify-between">

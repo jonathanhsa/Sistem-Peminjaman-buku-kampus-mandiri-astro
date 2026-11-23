@@ -10,6 +10,9 @@ import {
   ArrowRight,
   RefreshCw,
   Search,
+  Calendar,
+  Minus,
+  Plus,
 } from 'lucide-react';
 
 export interface BorrowFormProps {
@@ -76,6 +79,7 @@ export const BorrowForm: React.FC<BorrowFormProps> = ({
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [notes, setNotes] = useState('');
+  const [durationDays, setDurationDays] = useState(3);
   const [agreement, setAgreement] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -88,7 +92,8 @@ export const BorrowForm: React.FC<BorrowFormProps> = ({
   }, []);
 
   const borrowTime = formatIndonesianDate(nowDate);
-  const dueDateTime = new Date(nowDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+  const dueDateTime = new Date(nowDate);
+  dueDateTime.setDate(dueDateTime.getDate() + durationDays);
   dueDateTime.setHours(17, 0, 0, 0);
   const returnTime = formatIndonesianDate(dueDateTime);
 
@@ -159,6 +164,7 @@ export const BorrowForm: React.FC<BorrowFormProps> = ({
         body: JSON.stringify({
           itemCode: item.item_code,
           notes: notes.trim(),
+          durationDays,
         }),
       });
 
@@ -362,8 +368,8 @@ export const BorrowForm: React.FC<BorrowFormProps> = ({
                   <span className="font-semibold text-gray-800">{currentUser.name} ({currentUser.nim_nip})</span>
                 </div>
                 <div className="flex items-center justify-between text-[11px]">
-                  <span>Durasi Standar:</span>
-                  <span className="font-semibold text-gray-800">7 Hari Kalender</span>
+                  <span>Durasi Peminjaman:</span>
+                  <span className="font-semibold text-gray-800">Fleksibel (Maks. 10 Hari)</span>
                 </div>
                 <div className="flex items-center justify-between text-[11px]">
                   <span>Denda Keterlambatan:</span>
@@ -411,6 +417,79 @@ export const BorrowForm: React.FC<BorrowFormProps> = ({
                 </div>
               </div>
 
+              {/* Pilihan Durasi Peminjaman (Fleksibel, Maksimal 10 Hari) */}
+              <div className="p-4 bg-white rounded-2xl border border-gray-200/80 shadow-xs space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-semibold text-gray-700 flex items-center gap-1.5">
+                    <Calendar className="w-4 h-4 text-gray-400" />
+                    <span>Durasi Peminjaman</span>
+                  </label>
+                  <span className="text-[11px] font-medium text-gray-500">
+                    Maksimal <strong className="text-gray-800">10 Hari</strong>
+                  </span>
+                </div>
+
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                  <div className="flex items-center justify-between sm:justify-start border border-gray-200/90 rounded-2xl bg-surface-tint/60 p-1">
+                    <button
+                      type="button"
+                      onClick={() => setDurationDays((prev) => Math.max(1, prev - 1))}
+                      disabled={durationDays <= 1}
+                      aria-label="Kurangi 1 hari"
+                      className="w-8 h-8 rounded-xl flex items-center justify-center font-bold text-gray-600 hover:bg-white hover:text-primary hover:shadow-2xs disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gray-600 disabled:cursor-not-allowed transition cursor-pointer"
+                    >
+                      <Minus className="w-3.5 h-3.5" />
+                    </button>
+
+                    <div className="px-3 flex items-center justify-center min-w-[5rem]">
+                      <input
+                        type="number"
+                        min={1}
+                        max={10}
+                        value={durationDays}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value, 10);
+                          if (isNaN(val)) {
+                            setDurationDays(1);
+                          } else {
+                            setDurationDays(Math.max(1, Math.min(10, val)));
+                          }
+                        }}
+                        className="w-8 text-center font-extrabold text-ink bg-transparent focus:outline-none text-xs"
+                      />
+                      <span className="text-xs font-semibold text-gray-500">Hari</span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setDurationDays((prev) => Math.min(10, prev + 1))}
+                      disabled={durationDays >= 10}
+                      aria-label="Tambah 1 hari"
+                      className="w-8 h-8 rounded-xl flex items-center justify-center font-bold text-gray-600 hover:bg-white hover:text-primary hover:shadow-2xs disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-gray-600 disabled:cursor-not-allowed transition cursor-pointer"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    {[1, 3, 5, 7, 10].map((d) => (
+                      <button
+                        key={d}
+                        type="button"
+                        onClick={() => setDurationDays(d)}
+                        className={`text-[11px] px-2.5 py-1.5 rounded-xl border transition cursor-pointer font-semibold ${
+                          durationDays === d
+                            ? 'bg-primary text-white border-primary shadow-xs'
+                            : 'bg-white text-gray-600 border-gray-200 hover:border-primary hover:text-primary'
+                        }`}
+                      >
+                        {d === 10 ? '10 Hari (Maks)' : `${d} Hari`}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
               {/* Jadwal Peminjaman (Clean, Unified 2-Column Card) */}
               <div className="p-4 bg-white rounded-2xl border border-gray-200/80 shadow-xs space-y-3">
                 <div className="flex items-center gap-2 text-xs font-semibold text-gray-700">
@@ -433,7 +512,7 @@ export const BorrowForm: React.FC<BorrowFormProps> = ({
 
                   <div className="p-3 rounded-xl bg-gray-50/80 border border-gray-100">
                     <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wider block">
-                      Tenggat Kembali (7 Hari)
+                      Tenggat Kembali ({durationDays} Hari)
                     </span>
                     <p className="text-xs font-bold text-gray-900 mt-0.5">
                       {returnTime.dayName}, {returnTime.dateString}
@@ -671,7 +750,7 @@ export const BorrowForm: React.FC<BorrowFormProps> = ({
 
                 <div className="p-2.5 rounded-xl bg-gray-50/80 border border-gray-100 flex items-center justify-between">
                   <span className="text-gray-500">Tenggat Kembali:</span>
-                  <span className="font-bold text-indigo-700">{returnTime.dayName}, {returnTime.dateString} (7 Hari)</span>
+                  <span className="font-bold text-indigo-700">{returnTime.dayName}, {returnTime.dateString} ({durationDays} Hari)</span>
                 </div>
               </div>
             </div>

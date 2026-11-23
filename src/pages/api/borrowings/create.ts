@@ -29,16 +29,26 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
     let itemCode = '';
     let notes = '';
+    let durationDays = 7;
 
     const contentType = request.headers.get('content-type') || '';
     if (contentType.includes('application/json')) {
       const body = await request.json();
       itemCode = body.itemCode || body.item_code || '';
       notes = body.notes || '';
+      if (body.durationDays !== undefined && body.durationDays !== null && body.durationDays !== '') {
+        durationDays = parseInt(body.durationDays, 10);
+      } else if (body.duration !== undefined && body.duration !== null && body.duration !== '') {
+        durationDays = parseInt(body.duration, 10);
+      }
     } else {
       const formData = await request.formData();
       itemCode = formData.get('itemCode')?.toString() || formData.get('item_code')?.toString() || '';
       notes = formData.get('notes')?.toString() || '';
+      const durVal = formData.get('durationDays') || formData.get('duration');
+      if (durVal) {
+        durationDays = parseInt(durVal.toString(), 10);
+      }
     }
 
     if (!itemCode.trim()) {
@@ -46,6 +56,13 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
       });
+    }
+
+    if (isNaN(durationDays) || durationDays < 1 || durationDays > 10) {
+      return new Response(
+        JSON.stringify({ error: 'Durasi peminjaman tidak valid (minimal 1 hari dan maksimal 10 hari).' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
     }
 
     // 1. Find item
@@ -133,10 +150,10 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       );
     }
 
-    // 5. Generate dates: standard 7 calendar days (end of day 23:59:59)
+    // 5. Generate dates: user specified duration (1-10 calendar days, end of day 23:59:59)
     const now = new Date();
     const borrowDate = now.toISOString();
-    const dueDate = calculateDueDate(now, 7);
+    const dueDate = calculateDueDate(now, durationDays);
 
     let borrowingCode = generateBorrowingCode();
     // Ensure uniqueness
