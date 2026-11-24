@@ -10,7 +10,7 @@ const db = drizzle(sqlite, { schema });
 
 export const SEED_USERS = [
   {
-    name: 'Petugas Inventaris Kampus',
+    name: 'Petugas Perpustakaan Kampus',
     email: 'admin@kampus.ac.id',
     nim_nip: '198501012010121001',
     role: 'admin' as const,
@@ -33,37 +33,30 @@ export const SEED_USERS = [
 ];
 
 export const SEED_ITEMS = [
-  // 10 Buku Perpustakaan untuk Pengujian Barcode & OCR
-  { itemCode: 'LIB-LAR-101', name: 'Buku Pemrograman Web Modern dengan Laravel', category: 'Perpustakaan', stock: 8, status: 'available' as const },
-  { itemCode: 'LIB-ALG-102', name: 'Buku Struktur Data & Algoritma Tingkat Lanjut', category: 'Perpustakaan', stock: 4, status: 'available' as const },
-  { itemCode: 'LIB-ML-103', name: 'Buku Artificial Intelligence & Deep Learning', category: 'Perpustakaan', stock: 6, status: 'available' as const },
-  { itemCode: 'LIB-DB-104', name: 'Buku Perancangan Basis Data Relasional & NoSQL', category: 'Perpustakaan', stock: 5, status: 'available' as const },
-  { itemCode: 'LIB-NET-105', name: 'Buku Jaringan Komputer & Keamanan Siber', category: 'Perpustakaan', stock: 7, status: 'available' as const },
-  { itemCode: 'LIB-UIX-106', name: 'Buku Desain UI/UX & Interaksi Manusia Komputer', category: 'Perpustakaan', stock: 6, status: 'available' as const },
-  { itemCode: 'LIB-OS-107', name: 'Buku Konsep Sistem Operasi & Arsitektur Linux', category: 'Perpustakaan', stock: 3, status: 'available' as const },
-  { itemCode: 'LIB-IOT-108', name: 'Buku Robotika Cerdas & Internet of Things (IoT)', category: 'Perpustakaan', stock: 4, status: 'available' as const },
-  { itemCode: 'LIB-SE-109', name: 'Buku Rekayasa Perangkat Lunak & Pola Desain', category: 'Perpustakaan', stock: 5, status: 'available' as const },
-  { itemCode: 'LIB-STAT-110', name: 'Buku Statistika Probabilitas & Komputasi Sains Data', category: 'Perpustakaan', stock: 5, status: 'available' as const },
-
-  // Alat Laboratorium Komputer & Himpunan
-  { itemCode: 'LAB-CAM-001', name: 'Kamera DSLR Canon EOS 80D Kit', category: 'Lab Komputer', stock: 3, status: 'available' as const },
-  { itemCode: 'LAB-MIC-002', name: 'Microphone Wireless Rode Wireless GO II', category: 'Lab Komputer', stock: 5, status: 'available' as const },
-  { itemCode: 'LAB-VR-003', name: 'VR Headset Meta Quest 3 128GB', category: 'Lab Komputer', stock: 2, status: 'available' as const },
-  { itemCode: 'HMP-PROJ-201', name: 'Proyektor Portabel Epson EB-E500', category: 'Himpunan', stock: 1, status: 'available' as const },
-  { itemCode: 'HMP-SPK-202', name: 'Portable Speaker Bluetooth JBL PartyBox', category: 'Himpunan', stock: 2, status: 'available' as const },
-  { itemCode: 'LAB-DRN-901', name: 'Drone DJI Mini 3 Pro (Sedang Servis)', category: 'Lab Komputer', stock: 0, status: 'maintenance' as const },
+  // Koleksi Buku Perpustakaan (Kategori Tunggal: Buku Perpustakaan)
+  { itemCode: 'LIB-LAR-101', name: 'Buku Pemrograman Web Modern dengan Laravel', category: 'Buku Perpustakaan', stock: 8, status: 'available' as const },
+  { itemCode: 'LIB-ALG-102', name: 'Buku Struktur Data & Algoritma Tingkat Lanjut', category: 'Buku Perpustakaan', stock: 4, status: 'available' as const },
+  { itemCode: 'LIB-ML-103', name: 'Buku Artificial Intelligence & Deep Learning', category: 'Buku Perpustakaan', stock: 6, status: 'available' as const },
+  { itemCode: 'LIB-DB-104', name: 'Buku Perancangan Basis Data Relasional & NoSQL', category: 'Buku Perpustakaan', stock: 5, status: 'available' as const },
+  { itemCode: 'LIB-NET-105', name: 'Buku Jaringan Komputer & Keamanan Siber', category: 'Buku Perpustakaan', stock: 7, status: 'available' as const },
+  { itemCode: 'LIB-UIX-106', name: 'Buku Desain UI/UX & Interaksi Manusia Komputer', category: 'Buku Perpustakaan', stock: 6, status: 'available' as const },
+  { itemCode: 'LIB-OS-107', name: 'Buku Konsep Sistem Operasi & Arsitektur Linux', category: 'Buku Perpustakaan', stock: 3, status: 'available' as const },
+  { itemCode: 'LIB-IOT-108', name: 'Buku Robotika Cerdas & Internet of Things (IoT)', category: 'Buku Perpustakaan', stock: 4, status: 'available' as const },
+  { itemCode: 'LIB-SE-109', name: 'Buku Rekayasa Perangkat Lunak & Pola Desain', category: 'Buku Perpustakaan', stock: 5, status: 'available' as const },
+  { itemCode: 'LIB-STAT-110', name: 'Buku Statistika Probabilitas & Komputasi Sains Data', category: 'Buku Perpustakaan', stock: 5, status: 'available' as const },
+  { itemCode: 'LIB-CLN-111', name: 'Buku Clean Code & Arsitektur Perangkat Lunak (Sedang Dijilid)', category: 'Buku Perpustakaan', stock: 0, status: 'maintenance' as const },
 ];
 
 export const SEED_BORROWINGS = [
   {
     borrowingCode: 'PJM-20261001-A7K2',
     userNim: '220101001',
-    itemCode: 'LAB-CAM-001',
+    itemCode: 'LIB-ML-103',
     borrowDate: '2026-10-04T08:00:00Z',
     dueDate: '2026-10-11T17:00:00Z',
     status: 'borrowed' as const,
     fineAmount: 0,
-    notes: 'Untuk dokumentasi seminar kampus.',
+    notes: 'Untuk referensi mata kuliah Kecerdasan Buatan.',
   },
   {
     borrowingCode: 'PJM-20260920-OVD1',
@@ -78,23 +71,23 @@ export const SEED_BORROWINGS = [
   {
     borrowingCode: 'PJM-20260910-RET1',
     userNim: '220101002',
-    itemCode: 'LAB-MIC-002',
+    itemCode: 'LIB-ALG-102',
     borrowDate: '2026-09-21T08:00:00Z',
     dueDate: '2026-09-28T17:00:00Z',
     returnDate: '2026-09-28T14:30:00Z',
     status: 'returned' as const,
     fineAmount: 0,
-    notes: 'Dikembalikan dalam kondisi sangat baik.',
+    notes: 'Dikembalikan dalam kondisi baik dan lengkap.',
   },
   {
     borrowingCode: 'PJM-20261005-PND1',
     userNim: '220101002',
-    itemCode: 'HMP-PROJ-201',
+    itemCode: 'LIB-DB-104',
     borrowDate: '2026-10-06T09:00:00Z',
     dueDate: '2026-10-13T17:00:00Z',
     status: 'pending' as const,
     fineAmount: 0,
-    notes: 'Untuk rapat kerja himpunan.',
+    notes: 'Untuk bahan studi perancangan basis data.',
   },
 ];
 
@@ -120,7 +113,7 @@ export async function runSeed() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       item_code TEXT NOT NULL UNIQUE,
       name TEXT NOT NULL,
-      category TEXT NOT NULL,
+      category TEXT NOT NULL DEFAULT 'Buku Perpustakaan',
       stock INTEGER NOT NULL DEFAULT 0,
       status TEXT NOT NULL DEFAULT 'available',
       created_at TEXT DEFAULT CURRENT_TIMESTAMP
@@ -206,14 +199,14 @@ export async function runSeed() {
         {
           userId: jonathan.id,
           title: 'Peringatan Keterlambatan',
-          message: 'Peminjaman LIB-LAR-101 telah melewati batas pengembalian. Denda Rp 2.000 terhitung.',
+          message: 'Peminjaman buku LIB-LAR-101 telah melewati batas pengembalian. Denda Rp 2.000 terhitung.',
           type: 'danger',
           isRead: false,
         },
         {
           userId: jonathan.id,
           title: 'Peminjaman Aktif',
-          message: 'Peminjaman Kamera DSLR Canon EOS 80D Kit aktif sampai 11 Okt 2026.',
+          message: 'Peminjaman Buku Artificial Intelligence & Deep Learning aktif sampai 11 Okt 2026.',
           type: 'info',
           isRead: true,
         },

@@ -128,10 +128,10 @@ export const QrReceipt: React.FC<QrReceiptProps> = ({ borrowing, user, item }) =
               </h2>
               <p className="text-xs text-gray-200 mt-1">
                 {isReturnMode
-                  ? 'Tunjukkan kode QR ini ke petugas loket seperti pembayaran QRIS untuk mengembalikan barang'
+                  ? 'Tunjukkan kode QR ini ke petugas loket perpustakaan untuk mengembalikan buku'
                   : isReturned
-                  ? 'Barang inventaris kampus telah sukses dikembalikan dan dicatat oleh sistem.'
-                  : 'Simpan QR ini dan tunjukkan kepada petugas loket'}
+                  ? 'Buku perpustakaan kampus telah sukses dikembalikan dan dicatat oleh sistem.'
+                  : 'Simpan QR ini dan tunjukkan kepada petugas loket perpustakaan'}
               </p>
             </div>
 
@@ -152,8 +152,8 @@ export const QrReceipt: React.FC<QrReceiptProps> = ({ borrowing, user, item }) =
               </div>
 
               {isReturnMode && (
-                <span className="mt-3 inline-flex items-center gap-1.5 text-[11px] font-bold text-indigo-brand bg-indigo-50 px-3 py-1 rounded-full border border-indigo-200 animate-pulse">
-                  ● Menunggu Scan Verifikasi Petugas Loket
+                <span className="mt-3 inline-flex items-center gap-1.5 text-[11px] font-bold text-indigo-brand bg-indigo-50 px-3 py-1 rounded-full border border-indigo-200">
+                  Menunggu Scan Verifikasi Petugas Loket
                 </span>
               )}
 
@@ -202,13 +202,13 @@ export const QrReceipt: React.FC<QrReceiptProps> = ({ borrowing, user, item }) =
                   <span className="font-mono font-medium text-right text-gray-700">{user.nim_nip}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Barang:</span>
+                  <span className="text-gray-500">Judul Buku:</span>
                   <span className="font-semibold text-ink text-right max-w-[200px] truncate" title={item.name}>
                     {item.name}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Kode Barang:</span>
+                  <span className="text-gray-500">Kode Buku:</span>
                   <span className="font-mono text-xs bg-gray-100 px-2 py-0.5 rounded-md text-gray-700">{item.itemCode}</span>
                 </div>
                 <div className="flex justify-between">
@@ -330,15 +330,15 @@ export const QrReceipt: React.FC<QrReceiptProps> = ({ borrowing, user, item }) =
                   {isReturnMode
                     ? 'Verifikasi Pengembalian di Loket'
                     : isReturned
-                    ? 'Bukti Pengembalian Barang'
+                    ? 'Bukti Pengembalian Buku'
                     : 'Rincian Transaksi Peminjaman'}
                 </h2>
                 <p className="text-xs text-gray-200 mt-1">
                   {isReturnMode
-                    ? 'Tunjukkan QR Code di sebelah kanan kepada petugas loket untuk menyelesaikan proses pengembalian.'
+                    ? 'Tunjukkan QR Code di sebelah kanan kepada petugas loket perpustakaan untuk menyelesaikan proses pengembalian.'
                     : isReturned
-                    ? 'Barang inventaris kampus telah sukses dikembalikan dan dicatat oleh sistem.'
-                    : 'Detail bukti sirkulasi peminjaman barang inventaris kampus.'}
+                    ? 'Buku perpustakaan kampus telah sukses dikembalikan dan dicatat oleh sistem.'
+                    : 'Detail bukti sirkulasi peminjaman buku perpustakaan kampus.'}
                 </p>
               </div>
 
@@ -368,7 +368,7 @@ export const QrReceipt: React.FC<QrReceiptProps> = ({ borrowing, user, item }) =
 
                   <div className="p-4 rounded-2xl bg-surface-soft border border-gray-100 space-y-1">
                     <span className="text-[10px] uppercase font-bold tracking-wider text-gray-400 block">
-                      Barang Inventaris
+                      Buku Perpustakaan
                     </span>
                     <h4 className="font-bold text-sm text-ink truncate" title={item.name}>
                       {item.name}
@@ -473,10 +473,10 @@ export const QrReceipt: React.FC<QrReceiptProps> = ({ borrowing, user, item }) =
                 </h3>
                 <p className="text-xs text-gray-400 mt-1">
                   {isReturnMode
-                    ? 'Arahkan QR Code ini ke scanner petugas loket'
+                    ? 'Arahkan QR Code ini ke scanner petugas perpustakaan'
                     : isReturned
-                    ? 'Barang telah berhasil dikembalikan ke inventaris'
-                    : 'Arahkan QR Code ini ke scanner petugas loket'}
+                    ? 'Buku telah berhasil dikembalikan ke perpustakaan'
+                    : 'Arahkan QR Code ini ke scanner petugas perpustakaan'}
                 </p>
               </div>
 
@@ -500,8 +500,8 @@ export const QrReceipt: React.FC<QrReceiptProps> = ({ borrowing, user, item }) =
               </div>
 
               {isReturnMode && (
-                <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-indigo-brand bg-indigo-50 px-3.5 py-1.5 rounded-full border border-indigo-200 animate-pulse">
-                  ● Menunggu Scan Verifikasi Petugas Loket
+                <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-indigo-brand bg-indigo-50 px-3.5 py-1.5 rounded-full border border-indigo-200">
+                  Menunggu Scan Verifikasi Petugas Loket
                 </span>
               )}
 
@@ -551,13 +551,13 @@ export const QrReceipt: React.FC<QrReceiptProps> = ({ borrowing, user, item }) =
             KEMENTERIAN PENDIDIKAN, KEBUDAYAAN, RISET, DAN TEKNOLOGI
           </h2>
           <h1 className="text-base font-extrabold uppercase tracking-wide text-black mt-0.5">
-            UNIT PELAKSANA TEKNIS (UPT) PERPUSTAKAAN & LABORATORIUM KAMPUS
+            UNIT PELAKSANA TEKNIS (UPT) PERPUSTAKAAN KAMPUS
           </h1>
           <p className="text-[11px] text-gray-800">
-            Sistem Peminjaman Barang Mandiri (SIPEMBAR) — Gedung Perpustakaan & Laboratorium Terpadu Lt. 1
+            Sistem Peminjaman Buku Perpustakaan Mandiri (SIPEMBAR) — Gedung Perpustakaan Terpadu Lt. 1
           </p>
           <p className="text-[10px] text-gray-600">
-            Website: sipembar.kampus.ac.id | Email: inventaris@kampus.ac.id | Hotline Loket: (021) 555-0199
+            Website: sipembar.kampus.ac.id | Email: perpustakaan@kampus.ac.id | Hotline Loket: (021) 555-0199
           </p>
         </div>
         <div className="border-b border-black mb-4"></div>
@@ -566,10 +566,10 @@ export const QrReceipt: React.FC<QrReceiptProps> = ({ borrowing, user, item }) =
         <div className="flex items-center justify-between pb-3 mb-3 border-b border-gray-300">
           <div>
             <h3 className="text-sm font-bold uppercase tracking-tight text-black">
-              SURAT BUKTI TRANSAKSI SIRKULASI INVENTARIS
+              SURAT BUKTI TRANSAKSI SIRKULASI PERPUSTAKAAN
             </h3>
             <span className="text-xs text-gray-600 block mt-0.5">
-              Tanda Bukti Sah Peminjaman dan Pengembalian Barang Inventaris Kampus
+              Tanda Bukti Sah Peminjaman dan Pengembalian Buku Perpustakaan Kampus
             </span>
           </div>
           <div className="text-right">
@@ -613,20 +613,20 @@ export const QrReceipt: React.FC<QrReceiptProps> = ({ borrowing, user, item }) =
             </table>
           </div>
 
-          {/* Kolom 2: Data Barang */}
+          {/* Kolom 2: Data Buku */}
           <div className="border border-gray-400 rounded-lg p-3">
             <span className="font-bold uppercase text-[10px] text-gray-700 block pb-1 border-b border-gray-300 mb-2">
-              II. RINCIAN BARANG INVENTARIS
+              II. RINCIAN BUKU PERPUSTAKAAN
             </span>
             <table className="w-full text-xs">
               <tbody>
                 <tr>
-                  <td className="w-24 text-gray-600 py-1 font-medium">Nama Barang</td>
+                  <td className="w-24 text-gray-600 py-1 font-medium">Judul Buku</td>
                   <td className="w-3 text-center">:</td>
                   <td className="font-bold text-black py-1">{item.name}</td>
                 </tr>
                 <tr>
-                  <td className="text-gray-600 py-1 font-medium">Kode Barang</td>
+                  <td className="text-gray-600 py-1 font-medium">Kode Buku</td>
                   <td className="text-center">:</td>
                   <td className="font-mono font-bold text-black py-1">{item.itemCode}</td>
                 </tr>
@@ -636,9 +636,9 @@ export const QrReceipt: React.FC<QrReceiptProps> = ({ borrowing, user, item }) =
                   <td className="text-black py-1">{item.category}</td>
                 </tr>
                 <tr>
-                  <td className="text-gray-600 py-1 font-medium">Jumlah Unit</td>
+                  <td className="text-gray-600 py-1 font-medium">Jumlah</td>
                   <td className="text-center">:</td>
-                  <td className="text-black py-1 font-semibold">1 (Satu) Unit Fisik</td>
+                  <td className="text-black py-1 font-semibold">1 (Satu) Eksemplar</td>
                 </tr>
               </tbody>
             </table>
@@ -719,7 +719,7 @@ export const QrReceipt: React.FC<QrReceiptProps> = ({ borrowing, user, item }) =
               V. KODE PENGESAHAN LOKET DIGITAL
             </span>
             <p className="text-[11px] text-gray-700 leading-snug">
-              Pindai QR Code di samping pada scanner loket inventaris untuk verifikasi keabsahan data peminjaman atau penyelesaian pengembalian fisik barang.
+              Pindai QR Code di samping pada scanner loket perpustakaan untuk verifikasi keabsahan data peminjaman atau penyelesaian pengembalian fisik buku.
             </p>
             <span className="font-mono text-xs font-extrabold text-black block tracking-wider pt-1">
               {borrowing.borrowingCode}
@@ -741,9 +741,9 @@ export const QrReceipt: React.FC<QrReceiptProps> = ({ borrowing, user, item }) =
         <div className="text-[9.5px] text-gray-700 leading-relaxed mb-6 border-t border-gray-300 pt-2">
           <strong>Ketentuan Peminjam:</strong>
           <ol className="list-decimal pl-4 space-y-0.5 mt-0.5">
-            <li>Surat bukti ini merupakan tanda terima resmi peminjaman barang inventaris kampus.</li>
-            <li>Peminjam bertanggung jawab penuh atas keutuhan, kelengkapan, dan kebersihan barang selama masa peminjaman.</li>
-            <li>Keterlambatan pengembalian dikenakan denda sesuai regulasi UPT Perpustakaan & Laboratorium.</li>
+            <li>Surat bukti ini merupakan tanda terima resmi peminjaman buku perpustakaan kampus.</li>
+            <li>Peminjam bertanggung jawab penuh atas keutuhan, kelengkapan, dan kebersihan buku selama masa peminjaman.</li>
+            <li>Keterlambatan pengembalian dikenakan denda sesuai regulasi UPT Perpustakaan Kampus.</li>
           </ol>
         </div>
 
@@ -759,11 +759,11 @@ export const QrReceipt: React.FC<QrReceiptProps> = ({ borrowing, user, item }) =
 
           <div>
             <span className="text-[11px] text-gray-600 block">
-              Petugas Loket Inventaris,
+              Petugas Loket Perpustakaan,
             </span>
             <div className="h-16 flex items-end justify-center">
               <span className="font-bold underline text-black">
-                ( Petugas UPT Inventaris )
+                ( Petugas UPT Perpustakaan )
               </span>
             </div>
             <span className="text-[10px] text-gray-600 block">Cap & Tanda Tangan Loket</span>

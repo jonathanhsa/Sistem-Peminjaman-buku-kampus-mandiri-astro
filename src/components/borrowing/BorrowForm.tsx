@@ -60,10 +60,10 @@ function formatIndonesianDate(date: Date) {
 
 const REASON_PRESETS = [
   'Tugas Akhir / Skripsi',
-  'Praktikum Laboratorium',
   'Referensi Kuliah',
-  'Kegiatan Organisasi',
   'Riset Mandiri',
+  'Persiapan Ujian',
+  'Bacaan Umum',
 ];
 
 export const BorrowForm: React.FC<BorrowFormProps> = ({
@@ -109,7 +109,7 @@ export const BorrowForm: React.FC<BorrowFormProps> = ({
       const res = await fetch(`/api/items/lookup?code=${encodeURIComponent(clean)}`);
       const data = await res.json();
       if (!res.ok) {
-        setSearchError(data.message || 'Barang tidak ditemukan dalam database.');
+        setSearchError(data.message || 'Buku tidak ditemukan dalam katalog perpustakaan.');
         setItem(null);
       } else {
         setItem(data);
@@ -117,7 +117,7 @@ export const BorrowForm: React.FC<BorrowFormProps> = ({
         setSearchError(null);
       }
     } catch {
-      setSearchError('Gagal memuat informasi barang dari server.');
+      setSearchError('Gagal memuat informasi buku dari server.');
       setItem(null);
     } finally {
       setIsSearching(false);
@@ -202,7 +202,7 @@ export const BorrowForm: React.FC<BorrowFormProps> = ({
             Peminjaman Berhasil Diajukan!
           </h2>
           <p className="text-xs sm:text-sm text-emerald-100 max-w-md mx-auto">
-            Notifikasi otomatis telah dibuat dan transaksi telah tersimpan di riwayat Anda. Silakan tunjukkan QR receipt ini ke petugas saat pengambilan barang.
+            Notifikasi otomatis telah dibuat dan transaksi telah tersimpan di riwayat Anda. Silakan tunjukkan QR receipt ini ke petugas perpustakaan saat pengambilan buku.
           </p>
           <div className="pt-2">
             <span className="px-4 py-1.5 rounded-full bg-black/20 text-white font-mono text-xs font-bold tracking-wider">
@@ -225,8 +225,8 @@ export const BorrowForm: React.FC<BorrowFormProps> = ({
           user={currentUser}
           item={{
             itemCode: item?.item_code || code,
-            name: item?.name || 'Barang Inventaris',
-            category: item?.category || 'Perpustakaan',
+            name: item?.name || 'Buku Perpustakaan',
+            category: item?.category || 'Buku Perpustakaan',
           }}
         />
 
@@ -256,7 +256,7 @@ export const BorrowForm: React.FC<BorrowFormProps> = ({
             className="w-full sm:w-auto px-6 py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-bold rounded-2xl flex items-center justify-center gap-2 transition"
           >
             <RefreshCw className="w-4 h-4" />
-            <span>Pinjam Barang Lain</span>
+            <span>Pinjam Buku Lain</span>
           </button>
         </div>
       </div>
@@ -280,12 +280,12 @@ export const BorrowForm: React.FC<BorrowFormProps> = ({
           {/* Header Title */}
           <div>
             <h1 className="text-2xl font-bold text-ink font-display">
-              Peminjaman Barang & Buku
+              Peminjaman Buku Perpustakaan
             </h1>
             <p className="text-xs text-gray-500 mt-1">
               {item
-                ? 'Periksa informasi barang dan konfirmasi pengajuan peminjaman di bawah ini.'
-                : 'Pindai barcode pada buku atau peralatan inventaris menggunakan kamera di sebelah kanan.'}
+                ? 'Periksa informasi buku dan konfirmasi pengajuan peminjaman di bawah ini.'
+                : 'Pindai barcode pada buku perpustakaan menggunakan kamera di sebelah kanan.'}
             </p>
           </div>
 
@@ -323,7 +323,7 @@ export const BorrowForm: React.FC<BorrowFormProps> = ({
                 <div className="space-y-1">
                   <h3 className="font-bold text-sm text-ink">Kamera Siap Memindai</h3>
                   <p className="text-xs text-gray-500">
-                    Arahkan barcode atau kode QR barang ke bingkai kamera di sisi kanan.
+                    Arahkan barcode atau kode QR buku ke bingkai kamera di sisi kanan.
                   </p>
                 </div>
 
@@ -332,21 +332,21 @@ export const BorrowForm: React.FC<BorrowFormProps> = ({
                   <ul className="list-disc list-inside space-y-1 text-[11px] text-gray-500 pl-1">
                     <li>Posisikan barcode pada jarak sekitar 15–25 cm dari kamera.</li>
                     <li>Pastikan pencahayaan memadai agar garis barcode terlihat jelas.</li>
-                    <li>Mendukung Barcode 1D (Code 128 / EAN) dan QR Code inventaris.</li>
+                    <li>Mendukung Barcode 1D (Code 128 / EAN) dan QR Code buku perpustakaan.</li>
                   </ul>
                 </div>
 
                 {/* Input Kode Manual (Fallback) */}
                 <div className="pt-2 border-t border-gray-100">
                   <p className="text-xs font-medium text-gray-600 mb-2">
-                    Barcode tidak terbaca? Masukkan kode secara manual:
+                    Barcode tidak terbaca? Masukkan kode buku secara manual:
                   </p>
                   <form onSubmit={handleManualSearch} className="flex gap-2">
                     <input
                       type="text"
                       value={manualCodeInput}
                       onChange={(e) => setManualCodeInput(e.target.value)}
-                      placeholder="Contoh: LIB-LAR-101 / LAB-CAM-001"
+                      placeholder="Contoh: LIB-LAR-101"
                       className="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs uppercase font-mono tracking-wider focus:outline-none focus:border-indigo-brand focus:bg-white"
                     />
                     <button
@@ -373,7 +373,7 @@ export const BorrowForm: React.FC<BorrowFormProps> = ({
                 </div>
                 <div className="flex items-center justify-between text-[11px]">
                   <span>Denda Keterlambatan:</span>
-                  <span className="text-rose-600 font-semibold">Rp 1.000 / hari per barang</span>
+                  <span className="text-rose-600 font-semibold">Rp 1.000 / hari per buku</span>
                 </div>
               </div>
             </div>
@@ -401,7 +401,7 @@ export const BorrowForm: React.FC<BorrowFormProps> = ({
                         {item.name}
                       </h3>
                       <p className="text-[11px] text-gray-500 mt-0.5">
-                        Status: <span className="text-emerald-600 font-semibold">Tersedia ({item.stock} unit)</span>
+                        Status: <span className="text-emerald-600 font-semibold">Tersedia ({item.stock} eksemplar)</span>
                       </p>
                     </div>
                   </div>
@@ -410,7 +410,7 @@ export const BorrowForm: React.FC<BorrowFormProps> = ({
                     type="button"
                     onClick={handleResetScan}
                     className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition shrink-0"
-                    title="Ganti Barang"
+                    title="Ganti Buku"
                   >
                     <RefreshCw className="w-4 h-4" />
                   </button>
@@ -566,7 +566,7 @@ export const BorrowForm: React.FC<BorrowFormProps> = ({
                   className="mt-0.5 w-4 h-4 rounded text-indigo-brand accent-indigo-brand cursor-pointer"
                 />
                 <label htmlFor="agree-desktop" className="text-xs text-gray-600 leading-snug cursor-pointer select-none">
-                  Saya memahami dan menyetujui ketentuan peminjaman inventaris serta bersedia mengembalikan sebelum batas waktu yang ditentukan.
+                  Saya memahami dan menyetujui ketentuan peminjaman buku perpustakaan serta bersedia mengembalikan sebelum batas waktu yang ditentukan.
                 </label>
               </div>
 
@@ -645,10 +645,10 @@ export const BorrowForm: React.FC<BorrowFormProps> = ({
             {/* Header Mobile Ringkas */}
             <div className="text-center space-y-1">
               <h2 className="text-lg font-bold font-display text-ink">
-                Pindai Barcode Barang
+                Pindai Barcode Buku
               </h2>
               <p className="text-xs text-gray-500">
-                Arahkan lensa kamera langsung ke kode barcode atau QR buku / inventaris
+                Arahkan lensa kamera langsung ke kode barcode atau QR buku perpustakaan
               </p>
             </div>
 
@@ -663,13 +663,13 @@ export const BorrowForm: React.FC<BorrowFormProps> = ({
 
             {/* Fallback Input Manual Mobile */}
             <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-2xs space-y-2 max-w-md mx-auto">
-              <p className="text-xs font-medium text-gray-700">Barcode tidak terbaca? Masukkan kode manual:</p>
+              <p className="text-xs font-medium text-gray-700">Barcode tidak terbaca? Masukkan kode buku manual:</p>
               <form onSubmit={handleManualSearch} className="flex gap-2">
                 <input
                   type="text"
                   value={manualCodeInput}
                   onChange={(e) => setManualCodeInput(e.target.value)}
-                  placeholder="LIB-LAR-101 / LAB-CAM-001"
+                  placeholder="Contoh: LIB-LAR-101"
                   className="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs uppercase font-mono tracking-wider focus:outline-none focus:border-indigo-brand"
                 />
                 <button
@@ -730,7 +730,7 @@ export const BorrowForm: React.FC<BorrowFormProps> = ({
               <div className="flex items-center justify-between pt-2 border-t border-gray-100 text-xs text-gray-500">
                 <span>Ketersediaan Stok:</span>
                 <span className="font-semibold text-emerald-700">
-                  Tersedia ({item.stock} Unit)
+                  Tersedia ({item.stock} Eksemplar)
                 </span>
               </div>
             </div>

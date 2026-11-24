@@ -4,7 +4,7 @@ import AdminLayout from '../../../components/layout/AdminLayout.astro';
 const error = Astro.url.searchParams.get('error');
 ---
 
-<AdminLayout title="Tambah Inventaris — SIPEMBAR Admin" activeNav="barang">
+<AdminLayout title="Tambah Buku Perpustakaan — SIPEMBAR Admin" activeNav="barang">
   <div class="max-w-2xl mx-auto space-y-5">
     
     <!-- Top Breadcrumb & Header -->
@@ -13,11 +13,11 @@ const error = Astro.url.searchParams.get('error');
         <div class="flex items-center gap-2 text-xs text-gray-400 mb-1">
           <a href="/admin/dashboard" class="hover:text-gray-600">Dasbor</a>
           <span>/</span>
-          <a href="/admin/barang" class="hover:text-gray-600">Inventaris</a>
+          <a href="/admin/barang" class="hover:text-gray-600">Koleksi Buku</a>
           <span>/</span>
           <span class="text-gray-600 font-medium">Tambah Baru</span>
         </div>
-        <h1 class="text-xl font-extrabold text-ink tracking-tight">Formulir Tambah Inventaris</h1>
+        <h1 class="text-xl font-extrabold text-ink tracking-tight">Formulir Tambah Buku Perpustakaan</h1>
       </div>
 
       <a
@@ -40,45 +40,31 @@ const error = Astro.url.searchParams.get('error');
       <form method="POST" action="/api/items/create" class="space-y-4">
         <div>
           <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5" for="itemCode">
-            Kode Unik Inventaris (Serial / Barcode)
+            Kode Unik Buku (Barcode / Nomor Panggil)
           </label>
           <input
             id="itemCode"
             name="itemCode"
             type="text"
             required
-            placeholder="Contoh: LIB-NEW-101 atau LAB-CAM-004"
+            placeholder="Contoh: LIB-NEW-112"
             class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 bg-surface-soft text-xs font-mono tracking-wider focus:outline-none focus:border-primary focus:bg-white uppercase transition"
           />
           <div class="flex items-center gap-2 mt-2 flex-wrap">
-            <span class="text-[11px] text-gray-400">Pilihan cepat:</span>
+            <span class="text-[11px] text-gray-400">Awalan standar:</span>
             <button
               type="button"
               onclick="document.getElementById('itemCode').value='LIB-';"
-              class="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer"
+              class="text-[10px] font-bold px-2.5 py-0.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200/70 hover:bg-amber-100 cursor-pointer"
             >
-              LIB- (Perpustakaan)
-            </button>
-            <button
-              type="button"
-              onclick="document.getElementById('itemCode').value='LAB-';"
-              class="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer"
-            >
-              LAB- (Laboratorium)
-            </button>
-            <button
-              type="button"
-              onclick="document.getElementById('itemCode').value='HMP-';"
-              class="text-[10px] font-bold px-2 py-0.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 cursor-pointer"
-            >
-              HMP- (Himpunan)
+              LIB- (Kode Buku Perpustakaan)
             </button>
           </div>
         </div>
 
         <div>
           <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5" for="name">
-            Nama Barang Inventaris
+            Judul Buku
           </label>
           <input
             id="name"
@@ -92,23 +78,22 @@ const error = Astro.url.searchParams.get('error');
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5" for="category">
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5" for="categoryDisplay">
               Kategori
             </label>
-            <select
-              id="category"
-              name="category"
-              class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 bg-surface-soft text-xs focus:outline-none focus:border-primary focus:bg-white transition cursor-pointer"
-            >
-              <option value="Perpustakaan">Perpustakaan</option>
-              <option value="Lab Komputer">Lab Komputer</option>
-              <option value="Himpunan">Himpunan</option>
-            </select>
+            <input type="hidden" name="category" value="Buku Perpustakaan" />
+            <input
+              id="categoryDisplay"
+              type="text"
+              value="Buku Perpustakaan"
+              readonly
+              class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 bg-gray-100 text-gray-600 text-xs font-semibold cursor-not-allowed"
+            />
           </div>
 
           <div>
             <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5" for="stock">
-              Jumlah Stok Fisik
+              Jumlah Stok Eksemplar
             </label>
             <input
               id="stock"
@@ -132,7 +117,7 @@ const error = Astro.url.searchParams.get('error');
             class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 bg-surface-soft text-xs focus:outline-none focus:border-primary focus:bg-white transition cursor-pointer"
           >
             <option value="available">Tersedia (Siap Dipinjam)</option>
-            <option value="maintenance">Maintenance / Perbaikan</option>
+            <option value="maintenance">Perbaikan / Dijilid</option>
             <option value="borrowed">Sedang Dipinjam</option>
           </select>
         </div>
@@ -148,7 +133,7 @@ const error = Astro.url.searchParams.get('error');
             type="submit"
             class="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-bold shadow-md shadow-primary/20 transition cursor-pointer"
           >
-            Simpan Barang ke Inventaris
+            Simpan Buku ke Katalog
           </button>
         </div>
       </form>

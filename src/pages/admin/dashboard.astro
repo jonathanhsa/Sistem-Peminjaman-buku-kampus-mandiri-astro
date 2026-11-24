@@ -77,16 +77,16 @@ const returnRate = totalActiveOrReturned > 0 ? Math.round((returnedCount / total
 
 // Hourly traffic stats for Reports (realistic distribution per operational hour)
 const hourlyStats = [
-  { hour: '10:00', value: 25, count: '12 unit' },
-  { hour: '11:00', value: 42, count: '20 unit' },
-  { hour: '12:00', value: 78, count: '38 unit' },
-  { hour: '13:00', value: 52, count: '26 unit' },
-  { hour: '14:00', value: 85, count: '44 unit' },
-  { hour: '15:00', value: 48, count: '24 unit' },
-  { hour: '16:00', value: 38, count: '18 unit' },
-  { hour: '17:00', value: 64, count: '32 unit' },
-  { hour: '18:00', value: 32, count: '16 unit' },
-  { hour: '19:00', value: 18, count: '8 unit' },
+  { hour: '10:00', value: 25, count: '12 eks.' },
+  { hour: '11:00', value: 42, count: '20 eks.' },
+  { hour: '12:00', value: 78, count: '38 eks.' },
+  { hour: '13:00', value: 52, count: '26 eks.' },
+  { hour: '14:00', value: 85, count: '44 eks.' },
+  { hour: '15:00', value: 48, count: '24 eks.' },
+  { hour: '16:00', value: 38, count: '18 eks.' },
+  { hour: '17:00', value: 64, count: '32 eks.' },
+  { hour: '18:00', value: 32, count: '16 eks.' },
+  { hour: '19:00', value: 18, count: '8 eks.' },
 ];
 ---
 
@@ -98,16 +98,16 @@ const hourlyStats = [
     <!-- ============================================================ -->
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
       
-      <!-- Metric 1: Total Items -->
+      <!-- Metric 1: Total Books -->
       <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-[0_2px_12px_rgba(0,0,0,0.02)] flex items-center gap-4 hover:shadow-md transition">
         <div class="w-12 h-12 rounded-2xl bg-primary-light text-primary border border-primary/15 flex items-center justify-center shrink-0">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
           </svg>
         </div>
         <div>
-          <span class="text-2xl font-extrabold text-ink tracking-tight block leading-tight">{totalItemsCount}+</span>
-          <span class="text-xs text-gray-400 font-medium mt-0.5 block">Total Jenis Barang</span>
+          <span class="text-2xl font-extrabold text-ink tracking-tight block leading-tight">{totalItemsCount}</span>
+          <span class="text-xs text-gray-400 font-medium mt-0.5 block">Total Judul Buku</span>
         </div>
       </div>
 
@@ -119,8 +119,8 @@ const hourlyStats = [
           </svg>
         </div>
         <div>
-          <span class="text-2xl font-extrabold text-ink tracking-tight block leading-tight">{totalStock}+</span>
-          <span class="text-xs text-gray-400 font-medium mt-0.5 block">Unit Fisik Inventaris</span>
+          <span class="text-2xl font-extrabold text-ink tracking-tight block leading-tight">{totalStock}</span>
+          <span class="text-xs text-gray-400 font-medium mt-0.5 block">Total Eksemplar Buku</span>
         </div>
       </div>
 
@@ -162,11 +162,10 @@ const hourlyStats = [
         <div class="flex items-center justify-between mb-4">
           <div>
             <h3 class="text-base font-bold text-ink tracking-tight">Laporan Sirkulasi</h3>
-            <p class="text-xs text-gray-400">Statistik sirkulasi peminjaman barang per jam operasional</p>
+            <p class="text-xs text-gray-400">Statistik sirkulasi peminjaman buku perpustakaan per jam operasional</p>
           </div>
           <div class="flex items-center gap-2">
-            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-primary-light text-primary text-[11px] font-bold">
-              <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+            <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-primary-light text-primary text-[11px] font-bold">
               Hari Ini
             </span>
           </div>
@@ -341,7 +340,7 @@ const hourlyStats = [
                   <input type="checkbox" class="rounded accent-primary focus:ring-0 w-3.5 h-3.5 mx-auto block cursor-pointer" />
                 </th>
                 <th class="py-3 px-2 text-left whitespace-nowrap w-24">Kode Pinjam</th>
-                <th class="py-3 px-2.5 text-left whitespace-nowrap">Nama Barang</th>
+                <th class="py-3 px-2.5 text-left whitespace-nowrap">Judul Buku</th>
                 <th class="py-3 px-2.5 text-left whitespace-nowrap w-32">Peminjam</th>
                 <th class="py-3 px-1.5 text-center whitespace-nowrap w-16">Stok</th>
                 <th class="py-3 px-2 text-center whitespace-nowrap w-36">Status</th>
@@ -400,7 +399,7 @@ const hourlyStats = [
                         class="inline-flex justify-center"
                         onsubmit={
                           b.fineAmount > 0 && !b.finePaidAt
-                            ? `return confirm('Barang ini memiliki denda keterlambatan sebesar ${formatRupiah(b.fineAmount)}. Wajib lunas saat pengembalian: Apakah denda sudah dibayar lunas oleh mahasiswa?');`
+                            ? `return confirm('Buku ini memiliki denda keterlambatan sebesar ${formatRupiah(b.fineAmount)}. Wajib lunas saat pengembalian: Apakah denda sudah dibayar lunas oleh mahasiswa?');`
                             : undefined
                         }
                       >
@@ -455,7 +454,7 @@ const hourlyStats = [
       <div class="lg:col-span-5 xl:col-span-4 bg-white p-6 rounded-2xl border border-gray-100 shadow-[0_2px_12px_rgba(0,0,0,0.02)] flex flex-col justify-between">
         <div>
           <div class="flex items-center justify-between mb-4">
-            <h3 class="text-base font-bold text-ink tracking-tight">Barang Paling Populer</h3>
+            <h3 class="text-base font-bold text-ink tracking-tight">Buku Paling Populer</h3>
             <button type="button" class="text-gray-400 hover:text-gray-600 p-1 rounded-lg text-sm font-bold" title="Opsi lainnya">
               •••
             </button>
@@ -476,7 +475,7 @@ const hourlyStats = [
                     {'★'.repeat(5)}
                   </div>
                   <span class="text-xs font-extrabold text-primary mt-0.5 block">
-                    Stok: {item.stock} unit
+                    Stok: {item.stock} eks.
                   </span>
                 </div>
               </div>

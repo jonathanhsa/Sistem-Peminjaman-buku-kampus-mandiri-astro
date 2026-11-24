@@ -69,10 +69,10 @@ function formatIndonesianDate(date: Date) {
 
 const REASON_PRESETS = [
   'Tugas Akhir / Skripsi',
-  'Praktikum Laboratorium',
   'Referensi Kuliah',
-  'Kegiatan Organisasi',
   'Riset Mandiri',
+  'Persiapan Ujian',
+  'Bacaan Umum',
 ];
 
 export const BorrowConfirmForm: React.FC<BorrowConfirmFormProps> = ({
@@ -159,7 +159,7 @@ export const BorrowConfirmForm: React.FC<BorrowConfirmFormProps> = ({
           <div className="w-12 h-1 bg-primary rounded-full mx-auto" />
 
           <p className="text-xs sm:text-sm text-gray-300 max-w-md mx-auto pt-1 font-normal">
-            Notifikasi otomatis telah dikirim dan transaksi tersimpan di riwayat. Tunjukkan bukti QR ini ke petugas saat pengambilan barang.
+            Notifikasi otomatis telah dikirim dan transaksi tersimpan di riwayat. Tunjukkan bukti QR ini ke petugas perpustakaan saat pengambilan buku.
           </p>
 
           <div className="pt-2">
@@ -208,7 +208,7 @@ export const BorrowConfirmForm: React.FC<BorrowConfirmFormProps> = ({
             className="w-full sm:w-auto px-6 py-3.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-full flex items-center justify-center gap-2 transition"
           >
             <RefreshCw className="w-4 h-4" />
-            <span>Pinjam Barang Lain</span>
+            <span>Pinjam Buku Lain</span>
           </a>
         </div>
       </div>
@@ -276,7 +276,7 @@ export const BorrowConfirmForm: React.FC<BorrowConfirmFormProps> = ({
             <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 text-xs font-medium flex items-center gap-3">
               <AlertCircle className="w-5 h-5 shrink-0 text-amber-600" />
               <span>
-                Batas maksimal 3 peminjaman aktif tercapai. Harap kembalikan salah satu barang terlebih dahulu.
+                Batas maksimal 3 peminjaman aktif tercapai. Harap kembalikan salah satu buku terlebih dahulu.
               </span>
             </div>
           )}
@@ -314,7 +314,7 @@ export const BorrowConfirmForm: React.FC<BorrowConfirmFormProps> = ({
                 <a
                   href="/pinjam"
                   className="p-2 rounded-xl text-gray-400 hover:text-primary hover:bg-white transition shrink-0"
-                  title="Ganti Barang"
+                  title="Ganti Buku"
                 >
                   <RefreshCw className="w-4 h-4" />
                 </a>
@@ -323,7 +323,7 @@ export const BorrowConfirmForm: React.FC<BorrowConfirmFormProps> = ({
               <div className="flex items-center justify-between pt-3 border-t border-gray-200/60 text-xs text-gray-500">
                 <span>Ketersediaan Stok:</span>
                 <span className="font-bold text-emerald-700 bg-emerald-100/70 px-2.5 py-0.5 rounded-full text-[11px]">
-                  ✓ Tersedia ({item.stock} Unit)
+                  ✓ Tersedia ({item.stock} Eksemplar)
                 </span>
               </div>
             </div>
@@ -484,7 +484,7 @@ export const BorrowConfirmForm: React.FC<BorrowConfirmFormProps> = ({
                 className="mt-0.5 w-4 h-4 rounded text-primary accent-primary cursor-pointer"
               />
               <label htmlFor="agree" className="text-xs text-gray-600 leading-snug cursor-pointer select-none">
-                Saya memahami dan menyetujui ketentuan peminjaman inventaris kampus serta bersedia mengembalikan sebelum batas jatuh tempo.
+                Saya memahami dan menyetujui ketentuan peminjaman buku perpustakaan kampus serta bersedia mengembalikan sebelum batas jatuh tempo.
               </label>
             </div>
 
@@ -605,7 +605,7 @@ export const BorrowConfirmForm: React.FC<BorrowConfirmFormProps> = ({
               <div className="p-3.5 rounded-2xl bg-surface-tint border border-gray-100 flex items-start gap-2.5 text-[11px] text-gray-500 leading-relaxed">
                 <ShieldCheck className="w-4 h-4 shrink-0 text-indigo-brand mt-0.5" />
                 <span>
-                  Pengembalian tepat waktu membantu rekan mahasiswa lain dapat memanfaatkan buku dan peralatan inventaris secara adil.
+                  Pengembalian tepat waktu membantu rekan mahasiswa lain dapat memanfaatkan koleksi buku perpustakaan secara adil.
                 </span>
               </div>
 

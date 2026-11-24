@@ -7,7 +7,7 @@ import { calculateDueDate } from '../../../../lib/fine';
 export const POST: APIRoute = async ({ params, request, cookies, redirect }) => {
   const user = await getCurrentUser(cookies);
   if (!user || user.role !== 'admin') {
-    return new Response(JSON.stringify({ error: 'Akses hanya untuk petugas inventaris.' }), {
+    return new Response(JSON.stringify({ error: 'Akses hanya untuk petugas perpustakaan.' }), {
       status: 403,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -39,7 +39,7 @@ export const POST: APIRoute = async ({ params, request, cookies, redirect }) => 
   // Check item stock
   const item = await db.select().from(schema.items).where(eq(schema.items.id, borrowing.itemId)).get();
   if (!item || item.stock <= 0) {
-    return new Response(JSON.stringify({ error: 'Stok barang tidak mencukupi untuk disetujui.' }), {
+    return new Response(JSON.stringify({ error: 'Stok buku tidak mencukupi untuk disetujui.' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -78,7 +78,7 @@ export const POST: APIRoute = async ({ params, request, cookies, redirect }) => 
     .values({
       userId: borrowing.userId,
       title: 'Peminjaman Disetujui',
-      message: `Peminjaman ${item.name} (${borrowing.borrowingCode}) telah disetujui oleh petugas. Silakan ambil barang di loket.`,
+      message: `Peminjaman ${item.name} (${borrowing.borrowingCode}) telah disetujui oleh petugas perpustakaan. Silakan ambil buku di loket.`,
       type: 'success',
       isRead: false,
     })

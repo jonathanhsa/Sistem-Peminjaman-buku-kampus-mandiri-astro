@@ -6,7 +6,7 @@ import { getCurrentUser } from '../../../../lib/auth';
 export const POST: APIRoute = async ({ params, cookies, redirect }) => {
   const user = await getCurrentUser(cookies);
   if (!user || user.role !== 'admin') {
-    return new Response(JSON.stringify({ error: 'Akses hanya untuk petugas inventaris.' }), {
+    return new Response(JSON.stringify({ error: 'Akses hanya untuk petugas perpustakaan.' }), {
       status: 403,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -51,7 +51,7 @@ export const POST: APIRoute = async ({ params, cookies, redirect }) => {
     .values({
       userId: borrowing.userId,
       title: 'Pengajuan Ditolak',
-      message: `Pengajuan peminjaman ${item?.name || 'barang'} (${borrowing.borrowingCode}) tidak disetujui petugas.`,
+      message: `Pengajuan peminjaman ${item?.name || 'buku'} (${borrowing.borrowingCode}) tidak disetujui petugas perpustakaan.`,
       type: 'warning',
       isRead: false,
     })

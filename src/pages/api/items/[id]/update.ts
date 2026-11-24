@@ -15,12 +15,12 @@ export const POST: APIRoute = async ({ params, request, cookies, redirect }) => 
   const id = parseInt(params.id || '0', 10);
   const formData = await request.formData();
   const name = formData.get('name')?.toString().trim() || '';
-  const category = formData.get('category')?.toString().trim() || 'Perpustakaan';
+  const category = 'Buku Perpustakaan';
   const stock = parseInt(formData.get('stock')?.toString() || '0', 10);
   const status = (formData.get('status')?.toString() || 'available') as 'available' | 'borrowed' | 'maintenance';
 
   if (!name) {
-    return new Response(JSON.stringify({ error: 'Nama barang tidak boleh kosong.' }), {
+    return new Response(JSON.stringify({ error: 'Judul buku tidak boleh kosong.' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' },
     });

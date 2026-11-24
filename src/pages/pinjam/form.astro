@@ -21,7 +21,7 @@ const item = await db
   .get();
 
 if (!item) {
-  return Astro.redirect('/pinjam?error=Barang+tidak+ditemukan');
+  return Astro.redirect('/pinjam?error=Buku+tidak+ditemukan');
 }
 
 // 2. Check unpaid fines

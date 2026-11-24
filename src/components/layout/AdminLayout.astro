@@ -116,8 +116,8 @@ for (const o of overdueBorrowings) {
 for (const s of outOfStockItems) {
   adminNotifs.push({
     id: `stock-${s.id}`,
-    title: 'Stok Fisik Habis',
-    message: `Barang ${s.name} (#${s.itemCode}) tersisa 0 unit`,
+    title: 'Stok Eksemplar Habis',
+    message: `Buku ${s.name} (#${s.itemCode}) tersisa 0 eksemplar`,
     type: 'info',
     link: '/admin/barang',
     badge: 'Stok 0',
@@ -167,7 +167,7 @@ const totalNotifCount = adminNotifs.length;
             </div>
             <div class="hidden lg:block">
               <span class="text-base font-extrabold tracking-tight text-ink block leading-none">SIPEMBAR</span>
-              <span class="text-[10px] font-bold text-primary uppercase tracking-wider">Panel Admin</span>
+              <span class="text-[10px] font-bold text-primary uppercase tracking-wider">Admin Perpustakaan</span>
             </div>
           </a>
         </div>
@@ -192,7 +192,7 @@ const totalNotifCount = adminNotifs.length;
             <span class="hidden lg:inline font-semibold">Dasbor</span>
           </a>
 
-          <!-- 2. Barang -->
+          <!-- 2. Koleksi Buku -->
           <a
             href="/admin/barang"
             class={`flex items-center gap-3.5 px-3 lg:px-3.5 py-3 rounded-xl text-xs font-bold transition-all group ${
@@ -200,14 +200,14 @@ const totalNotifCount = adminNotifs.length;
                 ? 'bg-primary-light text-primary shadow-xs'
                 : 'text-gray-500 hover:bg-primary-light/50 hover:text-primary'
             }`}
-            title="Kelola Barang"
+            title="Kelola Buku"
           >
             <div class={`w-5 h-5 flex items-center justify-center shrink-0 ${activeNav === 'barang' ? 'text-primary' : 'text-gray-400 group-hover:text-primary'}`}>
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
             </div>
-            <span class="hidden lg:inline font-semibold">Kelola Inventaris</span>
+            <span class="hidden lg:inline font-semibold">Kelola Buku</span>
           </a>
 
           <!-- 3. Peminjaman -->
@@ -284,15 +284,12 @@ const totalNotifCount = adminNotifs.length;
       <!-- Bottom Profile & Logout -->
       <div class="p-3 lg:p-4 border-t border-gray-100 flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <div class="relative">
-            <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm shadow-xs">
-              {user.name.charAt(0).toUpperCase()}
-            </div>
-            <div class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white"></div>
+          <div class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm shadow-xs">
+            {user.name.charAt(0).toUpperCase()}
           </div>
           <div class="hidden lg:block text-left">
             <span class="text-xs font-bold text-gray-900 block truncate max-w-[110px]">{user.name}</span>
-            <span class="text-[10px] text-gray-400 font-mono">Petugas Admin</span>
+            <span class="text-[10px] text-gray-400 font-mono">Pustakawan</span>
           </div>
         </div>
 
@@ -362,7 +359,7 @@ const totalNotifCount = adminNotifs.length;
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
               </svg>
               {totalNotifCount > 0 && (
-                <span class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center ring-2 ring-white animate-pulse">
+                <span class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center ring-2 ring-white">
                   {totalNotifCount}
                 </span>
               )}
@@ -403,7 +400,7 @@ const totalNotifCount = adminNotifs.length;
                       ✓
                     </div>
                     <p class="text-xs font-bold text-ink">Tidak ada notifikasi baru</p>
-                    <p class="text-[11px] text-gray-400">Semua permohonan telah diproses dan sirkulasi inventaris berjalan normal.</p>
+                    <p class="text-[11px] text-gray-400">Semua permohonan telah diproses dan sirkulasi perpustakaan berjalan normal.</p>
                   </div>
                 ) : (
                   adminNotifs.map((n) => (
@@ -458,15 +455,12 @@ const totalNotifCount = adminNotifs.length;
 
           <!-- User Avatar & Quick Info -->
           <div class="flex items-center gap-2.5 pl-2 sm:pl-3 border-l border-gray-100">
-            <div class="relative">
-              <div class="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs shadow-xs">
-                {user.name.charAt(0).toUpperCase()}
-              </div>
-              <div class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white"></div>
+            <div class="w-9 h-9 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs shadow-xs">
+              {user.name.charAt(0).toUpperCase()}
             </div>
             <div class="hidden md:block text-left">
               <span class="text-xs font-bold text-gray-800 block leading-tight">{user.name.split(' ')[0]}</span>
-              <span class="text-[10px] text-gray-400 font-mono">Petugas</span>
+              <span class="text-[10px] text-gray-400 font-mono">Pustakawan</span>
             </div>
           </div>
         </div>
@@ -503,7 +497,7 @@ const totalNotifCount = adminNotifs.length;
               Dasbor
             </a>
             <a href="/admin/barang" class={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold ${activeNav === 'barang' ? 'bg-primary-light text-primary' : 'text-gray-600'}`}>
-              Kelola Inventaris
+              Kelola Buku
             </a>
             <a href="/admin/peminjaman" class={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-bold ${activeNav === 'peminjaman' ? 'bg-primary-light text-primary' : 'text-gray-600'}`}>
               Peminjaman & ACC

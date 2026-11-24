@@ -82,7 +82,7 @@ export const GET: APIRoute = async ({ params, cookies }) => {
       id: borrowing.id,
       borrowing_code: borrowing.borrowingCode,
       user: user || { name: 'Unknown', nim_nip: '-' },
-      item: item || { item_code: '-', name: 'Barang tidak diketahui' },
+      item: item || { item_code: '-', name: 'Buku tidak diketahui' },
       borrow_date: borrowing.borrowDate,
       due_date: borrowing.dueDate,
       return_date: borrowing.returnDate,

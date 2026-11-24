@@ -12,12 +12,12 @@ export const users = sqliteTable('users', {
   createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 });
 
-// Tabel Items (Buku, Alat Lab, Himpunan)
+// Tabel Items (Koleksi Buku Perpustakaan)
 export const items = sqliteTable('items', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   itemCode: text('item_code').notNull().unique(),
   name: text('name').notNull(),
-  category: text('category').notNull(), // 'Perpustakaan' | 'Lab Komputer' | 'Himpunan'
+  category: text('category').notNull().default('Buku Perpustakaan'), // Kategori tunggal: 'Buku Perpustakaan'
   stock: integer('stock').notNull().default(0),
   status: text('status', { enum: ['available', 'borrowed', 'maintenance'] }).notNull().default('available'),
   createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),

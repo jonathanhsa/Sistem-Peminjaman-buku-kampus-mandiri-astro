@@ -4,7 +4,7 @@ import { db, schema } from '../db';
 import { CategoryIcon } from '../components/illustrations/CategoryIcon';
 
 const search = (Astro.url.searchParams.get('q') || '').trim().toLowerCase();
-const selectedCategory = (Astro.url.searchParams.get('cat') || 'Semua').trim();
+const availabilityFilter = (Astro.url.searchParams.get('status') || 'semua').trim().toLowerCase();
 
 const allItems = await db.select().from(schema.items).all();
 
@@ -14,35 +14,45 @@ const filteredItems = allItems.filter((item) => {
     item.name.toLowerCase().includes(search) ||
     item.itemCode.toLowerCase().includes(search);
 
-  const matchesCategory =
-    selectedCategory === 'Semua' || item.category.toLowerCase() === selectedCategory.toLowerCase();
+  const isAvailable = item.status === 'available' && item.stock > 0;
+  const matchesStatus =
+    availabilityFilter === 'semua' ||
+    (availabilityFilter === 'tersedia' && isAvailable) ||
+    (availabilityFilter === 'tidak-tersedia' && !isAvailable);
 
-  return matchesSearch && matchesCategory;
+  return matchesSearch && matchesStatus;
 });
 
-const categories = ['Semua', 'Perpustakaan', 'Lab Komputer', 'Himpunan'];
+const statusFilters = [
+  { id: 'semua', label: `Semua Buku (${allItems.length})` },
+  { id: 'tersedia', label: `Tersedia (${allItems.filter((i) => i.status === 'available' && i.stock > 0).length})` },
+  { id: 'tidak-tersedia', label: `Habis / Perbaikan (${allItems.filter((i) => i.status !== 'available' || i.stock <= 0).length})` },
+];
 ---
 
-<StudentLayout title="Katalog Barang & Buku" activeNav="katalog">
+<StudentLayout title="Katalog Buku Perpustakaan" activeNav="katalog">
   <div class="space-y-6">
     <!-- Header & Search -->
     <div data-animate="fade-up" class="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-[0_10px_35px_rgba(30,27,58,0.06)] space-y-5">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-5">
         <div>
-          <h1 class="text-2xl sm:text-3xl font-extrabold font-display text-ink tracking-tight">Katalog Inventaris Kampus</h1>
+          <span class="inline-block px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200/70 text-[11px] font-bold mb-2">
+            Kategori: Buku Perpustakaan
+          </span>
+          <h1 class="text-2xl sm:text-3xl font-extrabold font-display text-ink tracking-tight">Katalog Buku Perpustakaan</h1>
           <div class="w-11 h-1 bg-primary rounded-full mt-2"></div>
-          <p class="text-xs text-gray-500 mt-2">Cari buku referensi, peralatan lab, dan perlengkapan kegiatan mahasiswa</p>
+          <p class="text-xs text-gray-500 mt-2">Cari dan pinjam koleksi buku perpustakaan secara mandiri</p>
         </div>
 
         <!-- Search Form -->
         <form method="GET" class="flex items-center gap-2 max-w-md w-full">
-          <input type="hidden" name="cat" value={selectedCategory} />
+          <input type="hidden" name="status" value={availabilityFilter} />
           <div class="relative flex-1">
             <input
               type="text"
               name="q"
               value={search}
-              placeholder="Cari nama barang atau kode..."
+              placeholder="Cari judul buku atau kode buku..."
               class="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-gray-50 border border-gray-200 text-xs focus:outline-none focus:border-primary focus:bg-white transition"
             />
             <svg class="w-4 h-4 text-gray-400 absolute left-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -55,32 +65,32 @@ const categories = ['Semua', 'Perpustakaan', 'Lab Komputer', 'Himpunan'];
         </form>
       </div>
 
-      <!-- Category Filter Pills -->
+      <!-- Availability Filter Pills -->
       <div class="flex items-center gap-2 overflow-x-auto pb-1 pt-1">
-        {categories.map((cat) => (
+        {statusFilters.map((f) => (
           <a
-            href={`/katalog?cat=${encodeURIComponent(cat)}${search ? `&q=${encodeURIComponent(search)}` : ''}`}
+            href={`/katalog?status=${encodeURIComponent(f.id)}${search ? `&q=${encodeURIComponent(search)}` : ''}`}
             class={`px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap transition ${
-              selectedCategory.toLowerCase() === cat.toLowerCase()
+              availabilityFilter === f.id
                 ? 'bg-primary text-white shadow-[0_2px_10px_rgba(255,107,107,0.35)]'
                 : 'bg-gray-100 text-gray-600 hover:text-primary hover:bg-gray-200'
             }`}
           >
-            {cat}
+            {f.label}
           </a>
         ))}
       </div>
     </div>
 
-    <!-- Items Grid -->
+    <!-- Books Grid -->
     {filteredItems.length === 0 ? (
       <div data-animate="fade-in" class="bg-white rounded-3xl p-12 text-center border border-gray-100 shadow-[0_10px_35px_rgba(30,27,58,0.06)] space-y-3">
         <div class="w-16 h-16 rounded-full bg-rose-50 text-primary flex items-center justify-center mx-auto text-2xl font-bold">
           🔍
         </div>
-        <h3 class="text-base font-bold text-ink">Barang tidak ditemukan</h3>
+        <h3 class="text-base font-bold text-ink">Buku tidak ditemukan</h3>
         <p class="text-xs text-gray-500 max-w-sm mx-auto">
-          Tidak ada barang yang cocok dengan kata kunci "{search}". Coba gunakan kata kunci lain atau pilih kategori Semua.
+          Tidak ada buku yang cocok dengan kata kunci "{search}". Coba gunakan kata kunci lain atau reset filter.
         </p>
         <a href="/katalog" class="inline-block text-xs font-bold text-primary hover:underline">
           Reset Pencarian
@@ -122,19 +132,19 @@ const categories = ['Semua', 'Perpustakaan', 'Lab Komputer', 'Himpunan'];
                     <h3 class="font-bold text-sm text-ink line-clamp-2 leading-snug" title={item.name}>
                       {item.name}
                     </h3>
-                    <span class="text-[11px] text-gray-500">{item.category}</span>
+                    <span class="text-[11px] text-gray-500">Buku Perpustakaan</span>
                   </div>
                 </div>
               </div>
 
               <div class="pt-3 border-t border-gray-100 flex items-center justify-between">
-                <span class="text-xs text-gray-500 font-medium">Stok: {item.stock} unit</span>
+                <span class="text-xs text-gray-500 font-medium">Stok: {item.stock} eksemplar</span>
                 {isAvailable ? (
                   <a
                     href={`/pinjam/form?code=${item.itemCode}`}
                     class="px-4 py-2 rounded-2xl btn-coral text-white text-xs font-bold cursor-pointer"
                   >
-                    Pinjam
+                    Pinjam Buku
                   </a>
                 ) : (
                   <button

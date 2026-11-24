@@ -82,7 +82,7 @@ export const BorrowScannerView: React.FC<BorrowScannerViewProps> = ({
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.message || `Barang dengan kode "${clean}" tidak ditemukan dalam sistem inventaris.`);
+        setError(data.message || `Buku dengan kode "${clean}" tidak ditemukan dalam katalog perpustakaan.`);
         setIsLoading(false);
       } else {
         playScanBeep();
@@ -118,7 +118,7 @@ export const BorrowScannerView: React.FC<BorrowScannerViewProps> = ({
         }
       }
     } catch {
-      setError('Gagal menghubungi server untuk memvalidasi barcode barang.');
+      setError('Gagal menghubungi server untuk memvalidasi barcode buku.');
       setIsLoading(false);
     }
   };
@@ -158,7 +158,7 @@ export const BorrowScannerView: React.FC<BorrowScannerViewProps> = ({
             <div className="flex items-center justify-between pb-3 border-b border-gray-100">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider">
-                  Data Barang Berhasil Terbaca
+                  Data Buku Berhasil Terbaca
                 </span>
               </div>
               <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-gray-100 text-gray-700 font-bold">
@@ -182,7 +182,7 @@ export const BorrowScannerView: React.FC<BorrowScannerViewProps> = ({
                   {detectedItem.is_available ? (
                     <span className="text-[11px] font-bold text-emerald-700 bg-emerald-100/80 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1">
                       <CheckCircle2 className="w-3 h-3" />
-                      <span>Stok Tersedia ({detectedItem.stock} Unit)</span>
+                      <span>Stok Tersedia ({detectedItem.stock} Eksemplar)</span>
                     </span>
                   ) : (
                     <span className="text-[11px] font-bold text-rose-700 bg-rose-100 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1">
@@ -211,7 +211,7 @@ export const BorrowScannerView: React.FC<BorrowScannerViewProps> = ({
               </div>
             ) : (
               <div className="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs">
-                Barang ini sedang tidak dapat dipinjam karena stok kosong atau dalam perbaikan.
+                Buku ini sedang tidak dapat dipinjam karena stok kosong atau sedang dalam perbaikan.
               </div>
             )}
 
@@ -236,7 +236,7 @@ export const BorrowScannerView: React.FC<BorrowScannerViewProps> = ({
                     : 'w-full btn-coral text-white border-transparent'
                 }`}
               >
-                Pindai Barang Lain
+                Pindai Buku Lain
               </button>
             </div>
           </div>
@@ -252,11 +252,11 @@ export const BorrowScannerView: React.FC<BorrowScannerViewProps> = ({
         <div className="lg:col-span-6 space-y-5">
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-ink font-display tracking-tight">
-              Peminjaman Barang & Buku
+              Peminjaman Buku Perpustakaan
             </h1>
             <div className="w-11 h-1 bg-primary rounded-full mt-2"></div>
             <p className="text-xs text-gray-500 mt-2.5">
-              Pindai barcode pada buku atau peralatan inventaris menggunakan kamera di sebelah kanan.
+              Pindai barcode atau QR pada buku perpustakaan menggunakan kamera di sebelah kanan.
             </p>
           </div>
 
@@ -267,19 +267,19 @@ export const BorrowScannerView: React.FC<BorrowScannerViewProps> = ({
             </div>
           )}
 
-          {/* Card Barang Terdeteksi di Kolom Kiri Desktop */}
+          {/* Card Buku Terdeteksi di Kolom Kiri Desktop */}
           {detectedItem && (
             <div className="p-5 rounded-3xl bg-white border border-emerald-200 text-gray-800 space-y-3.5 shadow-sm">
               <div className="flex items-center justify-between text-xs">
                 <span className="font-bold text-emerald-700 flex items-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4" />
-                  <span>Barang Terdeteksi</span>
+                  <span>Buku Terdeteksi</span>
                 </span>
                 <span className="font-mono text-gray-500 text-[11px] font-bold bg-gray-100 px-2 py-0.5 rounded-md">{detectedItem.item_code}</span>
               </div>
               <div>
                 <h4 className="font-bold text-sm text-gray-900">{detectedItem.name}</h4>
-                <p className="text-xs text-gray-500 mt-0.5">{detectedItem.category} • Stok: {detectedItem.stock} Unit</p>
+                <p className="text-xs text-gray-500 mt-0.5">{detectedItem.category} • Stok: {detectedItem.stock} Eksemplar</p>
               </div>
               <div className="flex items-center gap-2 pt-1">
                 <button
@@ -306,7 +306,7 @@ export const BorrowScannerView: React.FC<BorrowScannerViewProps> = ({
             <div className="space-y-1">
               <h3 className="font-bold text-sm text-ink">Kamera Siap Memindai</h3>
               <p className="text-xs text-gray-500">
-                Arahkan barcode atau kode QR barang ke bingkai kamera di sisi kanan.
+                Arahkan barcode atau kode QR buku ke bingkai kamera di sisi kanan.
               </p>
             </div>
 
@@ -315,21 +315,21 @@ export const BorrowScannerView: React.FC<BorrowScannerViewProps> = ({
               <ul className="list-disc list-inside space-y-1 text-[11px] text-gray-500 pl-1">
                 <li>Posisikan barcode pada jarak sekitar 15–25 cm dari kamera.</li>
                 <li>Pastikan pencahayaan memadai agar garis barcode terlihat jelas.</li>
-                <li>Mendukung Barcode 1D (Code 128 / EAN) dan QR Code inventaris.</li>
+                <li>Mendukung Barcode 1D (Code 128 / EAN) dan QR Code buku perpustakaan.</li>
               </ul>
             </div>
 
             {/* Input Kode Manual */}
             <div className="pt-2 border-t border-gray-100">
               <p className="text-xs font-medium text-gray-600 mb-2.5">
-                Barcode tidak terbaca? Masukkan kode secara manual:
+                Barcode tidak terbaca? Masukkan kode buku secara manual:
               </p>
               <form onSubmit={handleManualSubmit} className="flex gap-2">
                 <input
                   type="text"
                   value={manualCode}
                   onChange={(e) => setManualCode(e.target.value)}
-                  placeholder="Contoh: LIB-LAR-101 / LAB-CAM-001"
+                  placeholder="Contoh: LIB-LAR-101"
                   className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-2xl text-xs uppercase font-mono tracking-wider focus:outline-none focus:border-primary focus:bg-white transition"
                 />
                 <button
@@ -356,7 +356,7 @@ export const BorrowScannerView: React.FC<BorrowScannerViewProps> = ({
             </div>
             <div className="flex items-center justify-between text-[11px]">
               <span>Denda Keterlambatan:</span>
-              <span className="text-rose-600 font-bold">Rp 1.000 / hari per barang</span>
+              <span className="text-rose-600 font-bold">Rp 1.000 / hari per buku</span>
             </div>
           </div>
         </div>
@@ -386,11 +386,11 @@ export const BorrowScannerView: React.FC<BorrowScannerViewProps> = ({
       <div className="block lg:hidden space-y-4">
         <div className="text-center space-y-1">
           <h2 className="text-xl font-extrabold font-display text-ink tracking-tight">
-            Pindai Barcode Barang
+            Pindai Barcode Buku
           </h2>
           <div className="w-11 h-1 bg-primary rounded-full mx-auto mt-1"></div>
           <p className="text-xs text-gray-500 pt-1">
-            Arahkan lensa kamera langsung ke kode barcode atau QR buku / inventaris
+            Arahkan lensa kamera langsung ke kode barcode atau QR buku perpustakaan
           </p>
         </div>
 
@@ -412,13 +412,13 @@ export const BorrowScannerView: React.FC<BorrowScannerViewProps> = ({
 
         {/* Fallback Input Manual Mobile */}
         <div className="bg-white p-5 rounded-3xl border border-gray-100 shadow-[0_10px_35px_rgba(30,27,58,0.06)] space-y-2.5 max-w-md mx-auto">
-          <p className="text-xs font-semibold text-gray-700">Barcode tidak terbaca? Masukkan kode manual:</p>
+          <p className="text-xs font-semibold text-gray-700">Barcode tidak terbaca? Masukkan kode buku manual:</p>
           <form onSubmit={handleManualSubmit} className="flex gap-2">
             <input
               type="text"
               value={manualCode}
               onChange={(e) => setManualCode(e.target.value)}
-              placeholder="LIB-LAR-101 / LAB-CAM-001"
+              placeholder="Contoh: LIB-LAR-101"
               className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-2xl text-xs uppercase font-mono tracking-wider focus:outline-none focus:border-primary focus:bg-white transition"
             />
             <button

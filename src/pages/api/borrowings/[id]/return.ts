@@ -7,7 +7,7 @@ import { calculateFine } from '../../../../lib/fine';
 export const POST: APIRoute = async ({ params, request, cookies, redirect }) => {
   const user = await getCurrentUser(cookies);
   if (!user || user.role !== 'admin') {
-    return new Response(JSON.stringify({ error: 'Akses hanya untuk petugas inventaris.' }), {
+    return new Response(JSON.stringify({ error: 'Akses hanya untuk petugas perpustakaan.' }), {
       status: 403,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -30,7 +30,7 @@ export const POST: APIRoute = async ({ params, request, cookies, redirect }) => 
   }
 
   if (borrowing.status === 'returned') {
-    return new Response(JSON.stringify({ error: 'Barang sudah dikembalikan sebelumnya.' }), {
+    return new Response(JSON.stringify({ error: 'Buku sudah dikembalikan sebelumnya.' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -109,8 +109,8 @@ export const POST: APIRoute = async ({ params, request, cookies, redirect }) => 
   await db.insert(schema.notifications)
     .values({
       userId: borrowing.userId,
-      title: 'Pengembalian Barang Berhasil',
-      message: `Barang ${item?.name || ''} (${borrowing.borrowingCode}) telah sukses dikembalikan ke petugas inventaris.${
+      title: 'Pengembalian Buku Berhasil',
+      message: `Buku ${item?.name || ''} (${borrowing.borrowingCode}) telah sukses dikembalikan ke petugas perpustakaan.${
         finalFine > 0 ? ` Denda keterlambatan Rp ${finalFine.toLocaleString('id-ID')} telah lunas.` : ''
       }`,
       type: 'success',
@@ -122,7 +122,7 @@ export const POST: APIRoute = async ({ params, request, cookies, redirect }) => 
     return new Response(
       JSON.stringify({
         success: true,
-        message: 'Pengembalian barang berhasil dicatat.',
+        message: 'Pengembalian buku berhasil dicatat.',
         fineAmount: finalFine,
         finePaidAt,
       }),

@@ -143,7 +143,7 @@ else if (tab === 'selesai') currentList = returnedList;
                 </th>
                 <th class="py-3.5 px-4">Kode Pinjam</th>
                 <th class="py-3.5 px-4">Mahasiswa</th>
-                <th class="py-3.5 px-4">Barang Inventaris</th>
+                <th class="py-3.5 px-4">Buku Perpustakaan</th>
                 <th class="py-3.5 px-4">Batas / Status</th>
                 <th class="py-3.5 px-4">Denda</th>
                 <th class="py-3.5 px-4 text-right">Tindakan</th>
@@ -226,7 +226,7 @@ else if (tab === 'selesai') currentList = returnedList;
                           action={`/api/borrowings/${b.id}/return`}
                           onsubmit={
                             b.fineAmount > 0 && !b.finePaidAt
-                              ? `return confirm('Barang ini memiliki denda keterlambatan sebesar ${formatRupiah(b.fineAmount)}. Wajib lunas saat pengembalian: Apakah denda sudah dibayar lunas oleh mahasiswa?');`
+                              ? `return confirm('Buku ini memiliki denda keterlambatan sebesar ${formatRupiah(b.fineAmount)}. Wajib lunas saat pengembalian: Apakah denda sudah dibayar lunas oleh mahasiswa?');`
                               : undefined
                           }
                         >

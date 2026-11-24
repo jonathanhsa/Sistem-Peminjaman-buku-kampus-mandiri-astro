@@ -7,7 +7,7 @@ export const GET: APIRoute = async ({ request }) => {
   const code = (url.searchParams.get('code') || '').trim();
 
   if (!code) {
-    return new Response(JSON.stringify({ message: 'Parameter kode barang wajib diberikan.' }), {
+    return new Response(JSON.stringify({ message: 'Parameter kode buku wajib diberikan.' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -21,7 +21,7 @@ export const GET: APIRoute = async ({ request }) => {
 
   if (!item) {
     return new Response(
-      JSON.stringify({ message: 'Barang dengan kode tersebut tidak ditemukan dalam inventaris.' }),
+      JSON.stringify({ message: 'Buku dengan kode tersebut tidak ditemukan dalam katalog perpustakaan.' }),
       {
         status: 404,
         headers: { 'Content-Type': 'application/json' },

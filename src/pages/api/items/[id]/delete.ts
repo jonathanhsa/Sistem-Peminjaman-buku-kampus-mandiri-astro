@@ -28,7 +28,7 @@ export const POST: APIRoute = async ({ params, cookies, redirect }) => {
 
   if (activeLoans.length > 0) {
     return new Response(
-      JSON.stringify({ error: 'Barang sedang dalam proses peminjaman aktif dan tidak dapat dihapus.' }),
+      JSON.stringify({ error: 'Buku sedang dalam proses peminjaman aktif dan tidak dapat dihapus.' }),
       { status: 400, headers: { 'Content-Type': 'application/json' } }
     );
   }

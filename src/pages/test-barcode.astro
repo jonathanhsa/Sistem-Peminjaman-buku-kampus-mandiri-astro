@@ -14,9 +14,8 @@ if (user.role !== 'admin') {
   return Astro.redirect('/katalog');
 }
 
-// Fetch the 10 library books for barcode printing
-const allItems = await db.select().from(schema.items).all();
-const libraryBooks = allItems.filter((i) => i.itemCode.startsWith('LIB-'));
+// Fetch all library books for barcode printing
+const libraryBooks = await db.select().from(schema.items).all();
 ---
 
 <!doctype html>
@@ -24,7 +23,7 @@ const libraryBooks = allItems.filter((i) => i.itemCode.startsWith('LIB-'));
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lembar Pengujian Barcode & OCR (10 Buku Perpustakaan) — SIPEMBAR</title>
+    <title>Lembar Cetak Barcode & OCR Buku Perpustakaan — SIPEMBAR</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -57,13 +56,13 @@ const libraryBooks = allItems.filter((i) => i.itemCode.startsWith('LIB-'));
           </div>
           <div>
             <div class="inline-block bg-primary text-white text-[10px] font-bold px-3 py-0.5 rounded-full uppercase tracking-wider mb-1.5 shadow-[0_2px_10px_rgba(255,107,107,0.35)]">
-              Lembar Cetak Label Fisik Inventaris
+              Lembar Cetak Label Fisik Perpustakaan
             </div>
             <h1 class="text-xl sm:text-2xl font-extrabold font-display text-ink tracking-tight">
-              Katalog Label Barcode Perpustakaan (Code 128 + QR Code + OCR)
+              Katalog Label Barcode Buku Perpustakaan (Code 128 + QR Code + OCR)
             </h1>
             <p class="text-xs text-gray-500 mt-0.5">
-              Lembar stiker inventaris untuk ditempel pada buku fisik dan dipindai saat sirkulasi peminjaman mandiri.
+              Lembar stiker label untuk ditempel pada buku fisik perpustakaan dan dipindai saat sirkulasi peminjaman mandiri.
             </p>
           </div>
         </div>

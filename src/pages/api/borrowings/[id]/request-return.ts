@@ -42,7 +42,7 @@ export const POST: APIRoute = async ({ params, request, cookies, redirect }) => 
   }
 
   if (borrowing.status === 'returned') {
-    return new Response(JSON.stringify({ error: 'Barang ini sudah dikembalikan sebelumnya.' }), {
+    return new Response(JSON.stringify({ error: 'Buku ini sudah dikembalikan sebelumnya.' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -50,7 +50,7 @@ export const POST: APIRoute = async ({ params, request, cookies, redirect }) => 
 
   if (borrowing.status !== 'borrowed' && borrowing.status !== 'overdue' && borrowing.status !== 'return_pending') {
     return new Response(
-      JSON.stringify({ error: 'Hanya barang yang sedang dipinjam yang dapat diajukan pengembaliannya.' }),
+      JSON.stringify({ error: 'Hanya buku yang sedang dipinjam yang dapat diajukan pengembaliannya.' }),
       {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
@@ -83,7 +83,7 @@ export const POST: APIRoute = async ({ params, request, cookies, redirect }) => 
       .values({
         userId: borrowing.userId,
         title: 'QR Pengembalian Siap Diverifikasi',
-        message: `Pengajuan pengembalian ${item?.name || 'barang'} (${borrowing.borrowingCode}) telah dibuat. Tunjukkan QR Code ke petugas loket untuk menyelesaikan pengembalian.${
+        message: `Pengajuan pengembalian ${item?.name || 'buku'} (${borrowing.borrowingCode}) telah dibuat. Tunjukkan QR Code ke petugas loket perpustakaan untuk menyelesaikan pengembalian.${
           finalFine > 0 ? ` Siapkan pelunasan denda keterlambatan sebesar Rp ${finalFine.toLocaleString('id-ID')}.` : ''
         }`,
         type: finalFine > 0 ? 'warning' : 'info',

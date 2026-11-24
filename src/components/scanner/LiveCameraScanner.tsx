@@ -180,7 +180,7 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
                   </p>
                 )}
                 <p className="text-[11px] text-gray-400 mt-1">
-                  Data barang terbaca. Mempersiapkan formulir peminjaman...
+                  Data buku terbaca. Mempersiapkan formulir peminjaman...
                 </p>
               </div>
               {onResetScan && (

@@ -17,8 +17,8 @@ export const ScannerDialog: React.FC<ScannerDialogProps> = ({
   isOpen,
   onClose,
   onDetected,
-  title = 'Scan Barcode / QR Barang',
-  description = 'Arahkan kamera ke barcode buku atau label inventaris',
+  title = 'Scan Barcode / QR Buku',
+  description = 'Arahkan kamera ke barcode atau label punggung buku perpustakaan',
   placeholder = 'LIB-LAR-101 / PJM-...',
 }) => {
   const [manualCode, setManualCode] = useState('');
@@ -117,9 +117,9 @@ export const ScannerDialog: React.FC<ScannerDialogProps> = ({
               <div className="w-14 h-14 bg-indigo-50 text-indigo-brand rounded-2xl flex items-center justify-center mb-3">
                 <Keyboard className="w-7 h-7" />
               </div>
-              <h4 className="font-bold text-ink text-base mb-1">Ketik Kode Inventaris</h4>
+              <h4 className="font-bold text-ink text-base mb-1">Ketik Kode Buku</h4>
               <p className="text-xs text-gray-500 max-w-xs mb-4">
-                Masukkan kode serial yang tertera pada stiker barcode atau punggung buku.
+                Masukkan kode serial yang tertera pada stiker barcode atau punggung buku perpustakaan.
               </p>
               <form onSubmit={handleManualSubmit} className="w-full max-w-xs space-y-3">
                 <input
@@ -144,7 +144,7 @@ export const ScannerDialog: React.FC<ScannerDialogProps> = ({
                   href="/katalog"
                   className="text-xs text-indigo-brand font-bold hover:underline"
                 >
-                  Belum tahu kode? Buka Katalog Inventaris →
+                  Belum tahu kode? Buka Katalog Buku →
                 </a>
               </div>
             </div>
@@ -220,7 +220,7 @@ export const ScannerDialog: React.FC<ScannerDialogProps> = ({
                   href="/katalog"
                   className="text-xs text-indigo-brand font-bold hover:underline"
                 >
-                  Cari kode barang di Katalog Inventaris →
+                  Cari kode buku di Katalog Perpustakaan →
                 </a>
               </div>
             </div>

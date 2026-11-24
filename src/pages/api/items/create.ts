@@ -15,12 +15,12 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   const formData = await request.formData();
   const itemCode = formData.get('itemCode')?.toString().trim().toUpperCase() || '';
   const name = formData.get('name')?.toString().trim() || '';
-  const category = formData.get('category')?.toString().trim() || 'Perpustakaan';
+  const category = 'Buku Perpustakaan';
   const stock = parseInt(formData.get('stock')?.toString() || '0', 10);
   const status = (formData.get('status')?.toString() || 'available') as 'available' | 'borrowed' | 'maintenance';
 
   if (!itemCode || !name) {
-    return new Response(JSON.stringify({ error: 'Kode barang dan nama barang wajib diisi.' }), {
+    return new Response(JSON.stringify({ error: 'Kode buku dan judul buku wajib diisi.' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -29,7 +29,7 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   // Check unique code
   const existing = await db.select().from(schema.items).where(eq(schema.items.itemCode, itemCode)).get();
   if (existing) {
-    return new Response(JSON.stringify({ error: 'Kode barang sudah ada di inventaris.' }), {
+    return new Response(JSON.stringify({ error: 'Kode buku sudah ada di katalog perpustakaan.' }), {
       status: 409,
       headers: { 'Content-Type': 'application/json' },
     });

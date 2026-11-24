@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ScannerDialog } from './ScannerDialog';
-import { Camera, CheckCircle2, AlertCircle, ShieldCheck, User, Package } from 'lucide-react';
+import { Camera, CheckCircle2, AlertCircle, ShieldCheck, User, BookOpen } from 'lucide-react';
 import { StatusBadge } from '../borrowing/StatusBadge';
 import confetti from 'canvas-confetti';
 
@@ -68,7 +68,7 @@ export const AdminVerification: React.FC = () => {
             origin: { y: 0.6 },
           });
         } catch {}
-        setActionSuccess('Pengembalian barang berhasil dicatat! Status telah diperbarui menjadi selesai dikembalikan.');
+        setActionSuccess('Pengembalian buku berhasil dicatat! Status telah diperbarui menjadi selesai dikembalikan.');
         fetchTransaction(transaction.borrowing_code);
       }
     } catch (err: any) {
@@ -99,7 +99,7 @@ export const AdminVerification: React.FC = () => {
             origin: { y: 0.6 },
           });
         } catch {}
-        setActionSuccess('Peminjaman telah disetujui! Stok inventaris otomatis berkurang.');
+        setActionSuccess('Peminjaman telah disetujui! Stok buku otomatis berkurang.');
         fetchTransaction(transaction.borrowing_code);
       }
     } catch (err: any) {
@@ -190,7 +190,7 @@ export const AdminVerification: React.FC = () => {
             <div className="p-3.5 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-900 text-xs flex items-center gap-2.5 font-medium">
               <CheckCircle2 className="w-4 h-4 text-indigo-brand shrink-0" />
               <span>
-                <strong>Pengajuan Pengembalian Aktif:</strong> Mahasiswa telah menyiapkan QR pengembalian ini. Periksa kondisi fisik barang dan pastikan denda (jika ada) dilunasi sebelum konfirmasi.
+                <strong>Pengajuan Pengembalian Aktif:</strong> Mahasiswa telah menyiapkan QR pengembalian ini. Periksa kondisi fisik buku dan pastikan denda (jika ada) dilunasi sebelum konfirmasi.
               </span>
             </div>
           )}
@@ -209,10 +209,10 @@ export const AdminVerification: React.FC = () => {
               )}
             </div>
 
-            {/* Item Info Card */}
+            {/* Book Info Card */}
             <div className="p-4 rounded-xl bg-surface-soft border border-gray-100 space-y-1.5">
               <span className="text-[10px] uppercase font-bold tracking-wider text-gray-400 flex items-center gap-1.5">
-                <Package className="w-3.5 h-3.5" /> Barang Inventaris
+                <BookOpen className="w-3.5 h-3.5" /> Buku Perpustakaan
               </span>
               <h4 className="font-bold text-sm text-ink-deep">{transaction.item.name}</h4>
               <p className="text-xs font-mono text-gray-600">Kode: #{transaction.item.item_code}</p>
@@ -257,7 +257,7 @@ export const AdminVerification: React.FC = () => {
             {transaction.status === 'pending' && (
               <div className="space-y-3">
                 <p className="text-xs text-gray-500">
-                  Permohonan ini masih berstatus <strong>Menunggu Persetujuan</strong>. Klik tombol berikut untuk menyetujui dan menyerahkan fisik barang.
+                  Permohonan ini masih berstatus <strong>Menunggu Persetujuan</strong>. Klik tombol berikut untuk menyetujui dan menyerahkan buku kepada mahasiswa.
                 </p>
                 <button
                   type="button"
@@ -266,7 +266,7 @@ export const AdminVerification: React.FC = () => {
                   className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <ShieldCheck className="w-4 h-4" />
-                  <span>Setujui Peminjaman & Kurangi Stok Barang</span>
+                  <span>Setujui Peminjaman & Kurangi Stok Buku</span>
                 </button>
               </div>
             )}
@@ -298,7 +298,7 @@ export const AdminVerification: React.FC = () => {
                     </div>
                     {!markFinePaid && (
                       <p className="text-[11px] text-rose-700 font-semibold">
-                        * Barang yang terlambat wajib dilunasi dendanya terlebih dahulu. Centang konfirmasi di atas setelah menerima pembayaran dari mahasiswa.
+                        * Buku yang terlambat wajib dilunasi dendanya terlebih dahulu. Centang konfirmasi di atas setelah menerima pembayaran dari mahasiswa.
                       </p>
                     )}
                   </div>
@@ -314,14 +314,14 @@ export const AdminVerification: React.FC = () => {
                   className="w-full py-3 px-4 rounded-xl bg-indigo-brand hover:bg-indigo-hover text-white font-bold text-xs shadow-md shadow-indigo-500/20 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed transition"
                 >
                   <CheckCircle2 className="w-4 h-4" />
-                  <span>Konfirmasi Penerimaan Pengembalian Barang</span>
+                  <span>Konfirmasi Penerimaan Pengembalian Buku</span>
                 </button>
               </div>
             )}
 
             {transaction.status === 'returned' && (
               <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-center font-bold text-xs">
-                Barang ini sudah dikembalikan pada {new Date(transaction.return_date || Date.now()).toLocaleDateString('id-ID')}.
+                Buku ini sudah dikembalikan pada {new Date(transaction.return_date || Date.now()).toLocaleDateString('id-ID')}.
               </div>
             )}
 

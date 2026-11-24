@@ -52,7 +52,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     }
 
     if (!itemCode.trim()) {
-      return new Response(JSON.stringify({ error: 'Kode barang tidak boleh kosong.' }), {
+      return new Response(JSON.stringify({ error: 'Kode buku tidak boleh kosong.' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
       });
@@ -73,7 +73,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       .get();
 
     if (!item) {
-      return new Response(JSON.stringify({ error: 'Barang tidak ditemukan dalam inventaris.' }), {
+      return new Response(JSON.stringify({ error: 'Buku tidak ditemukan dalam katalog perpustakaan.' }), {
         status: 404,
         headers: { 'Content-Type': 'application/json' },
       });
@@ -85,8 +85,8 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         JSON.stringify({
           error:
             item.status === 'maintenance'
-              ? 'Barang ini sedang dalam masa perbaikan/maintenance.'
-              : 'Stok barang ini saat ini habis.',
+              ? 'Buku ini sedang dalam masa perbaikan/penjilidan.'
+              : 'Stok buku ini saat ini sedang habis.',
         }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
@@ -109,7 +109,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       return new Response(
         JSON.stringify({
           error:
-            'Anda memiliki denda keterlambatan yang belum lunas. Silakan selesaikan denda di petugas sebelum meminjam barang baru.',
+            'Anda memiliki denda keterlambatan yang belum lunas. Silakan selesaikan denda di petugas perpustakaan sebelum meminjam buku baru.',
         }),
         { status: 403, headers: { 'Content-Type': 'application/json' } }
       );
@@ -135,7 +135,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       return new Response(
         JSON.stringify({
           error:
-            'Anda memiliki barang pinjaman yang telah melewati batas waktu pengembalian (terlambat). Silakan kembalikan barang dan lunasi denda di loket petugas terlebih dahulu.',
+            'Anda memiliki buku pinjaman yang telah melewati batas waktu pengembalian (terlambat). Silakan kembalikan buku dan lunasi denda di loket perpustakaan terlebih dahulu.',
         }),
         { status: 403, headers: { 'Content-Type': 'application/json' } }
       );

@@ -1,17 +1,17 @@
-# 📦 Sistem Peminjaman Barang Mandiri (SIPEMBAR)
+# 📚 Sistem Peminjaman Buku Perpustakaan Mandiri (SIPEMBAR)
 
-Sistem Peminjaman Barang Mandiri berbasis web modern yang dibangun dengan **Astro 5**, **React**, **Tailwind CSS v4**, dan **Drizzle ORM**. Mendukung database **SQLite** untuk development lokal dan **Cloudflare D1** untuk deployment serverless di Cloudflare Pages.
+Sistem Peminjaman Buku Perpustakaan Mandiri berbasis web modern yang dibangun dengan **Astro**, **React**, **Tailwind CSS v4**, dan **Drizzle ORM**. Mendukung database **SQLite** untuk development lokal dan **Cloudflare D1** untuk deployment serverless di Cloudflare Pages.
 
 ---
 
 ## ✨ Fitur Utama
 
-- 🔍 **Katalog & Pencarian Barang**: Eksplorasi ketersediaan barang secara real-time.
-- 📷 **Barcode / QR Code Scanner**: Scan langsung barang menggunakan kamera perangkat atau upload gambar untuk peminjaman cepat.
-- 📋 **Alur Peminjaman Mandiri**: Formulir peminjaman dengan verifikasi data dan status persetujuan.
+- 🔍 **Katalog & Pencarian Buku Perpustakaan**: Eksplorasi ketersediaan koleksi buku perpustakaan (kategori tunggal: Buku Perpustakaan) secara real-time.
+- 📷 **Barcode / QR Code Scanner**: Scan langsung barcode/QR pada buku menggunakan kamera perangkat atau upload gambar untuk peminjaman cepat.
+- 📋 **Alur Peminjaman Mandiri**: Formulir peminjaman buku dengan verifikasi data dan status persetujuan.
 - ⏱️ **Riwayat & Pengembalian**: Lacak status peminjaman aktif, riwayat pengembalian, dan keterlambatan.
-- 🛡️ **Autentikasi & Hak Akses**: Role-based access control (User & Administrator).
-- ⚙️ **Panel Administrator**: Kelola inventaris barang, persetujuan peminjaman, pengguna, dan log aktivitas.
+- 🛡️ **Autentikasi & Hak Akses**: Role-based access control (Mahasiswa & Petugas Perpustakaan).
+- ⚙️ **Panel Pustakawan / Admin**: Kelola koleksi buku perpustakaan, persetujuan peminjaman, verifikasi QR loket, dan laporan sirkulasi.
 - ☁️ **Hybrid Deployment Ready**: Dapat dijalankan di Node.js (SQLite) maupun Cloudflare Pages + D1.
 
 ---
