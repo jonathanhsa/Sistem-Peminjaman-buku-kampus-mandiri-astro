@@ -55,7 +55,7 @@ if (tab === 'aktif') currentList = activeList;
 else if (tab === 'selesai') currentList = returnedList;
 ---
 
-<AdminLayout title="Peminjaman & ACC — SIPEMBAR Admin" activeNav="peminjaman">
+<AdminLayout title="Peminjaman & ACC — SIPUSBA Admin" activeNav="peminjaman">
   <div class="space-y-5">
     
     <!-- Top Header Card with QR Scanner Shortcut -->
@@ -124,6 +124,76 @@ else if (tab === 'selesai') currentList = returnedList;
         </a>
       </div>
 
+      <!-- Bulk Feedback Banner -->
+      <div id="loans-bulk-feedback" class="hidden px-4 sm:px-6 py-2.5 text-xs font-semibold border-b"></div>
+
+      <!-- Bulk Action Toolbar -->
+      <div
+        id="loans-bulk-bar"
+        class="hidden px-4 sm:px-6 py-3 bg-surface-soft border-b border-gray-200/80 flex flex-wrap items-center justify-between gap-3"
+      >
+        <div class="flex items-center gap-2.5 text-xs">
+          <span class="px-2.5 py-1 rounded-xl bg-primary-light text-primary border border-primary/20 font-bold">
+            <span id="loans-selected-count">0</span> dipilih
+          </span>
+          <button
+            type="button"
+            id="loans-clear-selection"
+            class="text-gray-500 hover:text-ink font-semibold underline cursor-pointer transition"
+          >
+            Batal pilih
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2 flex-wrap">
+          {tab === 'pending' && (
+            <>
+              <button
+                type="button"
+                data-loan-bulk="approve"
+                class="px-3 py-1.5 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-bold shadow-xs transition cursor-pointer"
+              >
+                Setujui Terpilih (ACC)
+              </button>
+              <button
+                type="button"
+                data-loan-bulk="reject"
+                class="px-3 py-1.5 rounded-xl bg-primary-light hover:bg-primary-active text-primary border border-primary/20 text-xs font-bold transition cursor-pointer"
+              >
+                Tolak Terpilih
+              </button>
+            </>
+          )}
+
+          {tab === 'aktif' && (
+            <>
+              <button
+                type="button"
+                data-loan-bulk="return"
+                class="px-3 py-1.5 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-bold shadow-xs transition cursor-pointer"
+              >
+                Kembalikan Terpilih
+              </button>
+              <button
+                type="button"
+                data-loan-bulk="pay_fine"
+                class="px-3 py-1.5 rounded-xl bg-white hover:bg-gray-100 text-ink border border-gray-200 text-xs font-semibold transition cursor-pointer"
+              >
+                Lunasi Denda Terpilih
+              </button>
+            </>
+          )}
+
+          <button
+            type="button"
+            data-loan-bulk="export_csv"
+            class="px-3 py-1.5 rounded-xl bg-white hover:bg-gray-100 text-ink border border-gray-200 text-xs font-semibold transition cursor-pointer"
+          >
+            Ekspor CSV Terpilih
+          </button>
+        </div>
+      </div>
+
       <!-- Table View -->
       {currentList.length === 0 ? (
         <div class="p-12 text-center space-y-2">
@@ -139,7 +209,12 @@ else if (tab === 'selesai') currentList = returnedList;
             <thead>
               <tr class="border-b border-gray-100 text-gray-400 font-bold uppercase tracking-wider text-[11px] bg-surface-soft">
                 <th class="py-3.5 px-4 w-10">
-                  <input type="checkbox" class="rounded accent-primary focus:ring-0 w-3.5 h-3.5" />
+                  <input
+                    id="loans-select-all"
+                    type="checkbox"
+                    aria-label="Pilih semua transaksi"
+                    class="rounded accent-primary focus:ring-0 w-3.5 h-3.5 cursor-pointer"
+                  />
                 </th>
                 <th class="py-3.5 px-4">Kode Pinjam</th>
                 <th class="py-3.5 px-4">Mahasiswa</th>
@@ -151,9 +226,21 @@ else if (tab === 'selesai') currentList = returnedList;
             </thead>
             <tbody class="divide-y divide-gray-50">
               {currentList.map((b) => (
-                <tr class="hover:bg-surface-soft transition">
+                <tr class="loan-table-row hover:bg-surface-soft transition">
                   <td class="py-3.5 px-4">
-                    <input type="checkbox" class="rounded accent-primary focus:ring-0 w-3.5 h-3.5" />
+                    <input
+                      type="checkbox"
+                      data-id={b.id}
+                      data-code={b.borrowingCode}
+                      data-user={`${b.user.name} (${b.user.nim_nip})`}
+                      data-book={b.item.name}
+                      data-status={b.status}
+                      data-due={formatDate(b.dueDate)}
+                      data-fine={b.fineAmount}
+                      data-fine-paid={b.finePaidAt ? '1' : '0'}
+                      aria-label={`Pilih transaksi ${b.borrowingCode}`}
+                      class="loan-row-checkbox rounded accent-primary focus:ring-0 w-3.5 h-3.5 cursor-pointer"
+                    />
                   </td>
                   <td class="py-3.5 px-4 font-mono font-bold text-primary">
                     <a href={`/riwayat/${b.borrowingCode}`} target="_blank" class="hover:underline">
@@ -284,4 +371,156 @@ else if (tab === 'selesai') currentList = returnedList;
       </div>
     </div>
   </div>
+
+  <script>
+    function initLoansChecklist() {
+      const selectAll = document.getElementById('loans-select-all') as HTMLInputElement | null;
+      const bulkBar = document.getElementById('loans-bulk-bar');
+      const countEl = document.getElementById('loans-selected-count');
+      const clearBtn = document.getElementById('loans-clear-selection');
+      const feedbackEl = document.getElementById('loans-bulk-feedback');
+
+      if (!bulkBar || !countEl) return;
+
+      const showFeedback = (message: string, isError = false) => {
+        if (!feedbackEl) return;
+        feedbackEl.textContent = message;
+        feedbackEl.className = isError
+          ? 'px-4 sm:px-6 py-2.5 text-xs font-semibold border-b bg-primary-light text-primary-dark border-primary/20'
+          : 'px-4 sm:px-6 py-2.5 text-xs font-semibold border-b bg-surface-soft text-ink border-gray-200';
+      };
+
+      const savedMsg = sessionStorage.getItem('loans_bulk_msg');
+      if (savedMsg) {
+        sessionStorage.removeItem('loans_bulk_msg');
+        showFeedback(savedMsg, false);
+      }
+
+      if (!selectAll) return;
+      if (selectAll.dataset.bound === 'true') return;
+      selectAll.dataset.bound = 'true';
+
+      const getCheckboxes = () =>
+        Array.from(document.querySelectorAll<HTMLInputElement>('.loan-row-checkbox'));
+
+      const syncUI = () => {
+        const boxes = getCheckboxes();
+        const checked = boxes.filter((b) => b.checked);
+        const count = checked.length;
+
+        countEl.textContent = String(count);
+        bulkBar.classList.toggle('hidden', count === 0);
+
+        selectAll.checked = boxes.length > 0 && count === boxes.length;
+        selectAll.indeterminate = count > 0 && count < boxes.length;
+
+        boxes.forEach((box) => {
+          const row = box.closest('tr');
+          if (row) row.classList.toggle('bg-primary-light/35', box.checked);
+        });
+      };
+
+      selectAll.addEventListener('change', () => {
+        getCheckboxes().forEach((box) => {
+          box.checked = selectAll.checked;
+        });
+        syncUI();
+      });
+
+      getCheckboxes().forEach((box) => {
+        box.addEventListener('change', syncUI);
+      });
+
+      clearBtn?.addEventListener('click', () => {
+        getCheckboxes().forEach((box) => {
+          box.checked = false;
+        });
+        syncUI();
+      });
+
+      bulkBar.querySelectorAll<HTMLButtonElement>('[data-loan-bulk]').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const action = btn.dataset.loanBulk;
+          const selected = getCheckboxes().filter((b) => b.checked);
+          if (selected.length === 0 || !action) return;
+
+          if (action === 'export_csv') {
+            const rows = [['"Kode Pinjam"', '"Peminjam"', '"Judul Buku"', '"Status"', '"Jatuh Tempo"', '"Denda"'].join(',')];
+            selected.forEach((b) => {
+              const vals = [
+                b.dataset.code || '',
+                b.dataset.user || '',
+                b.dataset.book || '',
+                b.dataset.status || '',
+                b.dataset.due || '',
+                `Rp ${Number(b.dataset.fine || 0).toLocaleString('id-ID')}`,
+              ].map((v) => '"' + v.replace(/"/g, '""') + '"');
+              rows.push(vals.join(','));
+            });
+            const csv = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(rows.join('\n'));
+            const link = document.createElement('a');
+            link.href = csv;
+            link.download = `peminjaman-terpilih-${new Date().toISOString().slice(0, 10)}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showFeedback(`${selected.length} transaksi berhasil diekspor ke CSV.`, false);
+            return;
+          }
+
+          let markFinePaid = false;
+
+          if (action === 'reject') {
+            if (!confirm(`Tolak ${selected.length} permohonan peminjaman terpilih?`)) return;
+          } else if (action === 'return') {
+            const unpaidTotal = selected.reduce((sum, b) => {
+              const fine = Number(b.dataset.fine || 0);
+              const paid = b.dataset.finePaid === '1';
+              return sum + (fine > 0 && !paid ? fine : 0);
+            }, 0);
+
+            if (unpaidTotal > 0) {
+              const ok = confirm(
+                `Terdapat total denda keterlambatan Rp ${unpaidTotal.toLocaleString('id-ID')} pada transaksi terpilih. Apakah seluruh denda sudah dibayar lunas oleh mahasiswa?`
+              );
+              if (!ok) return;
+              markFinePaid = true;
+            } else {
+              if (!confirm(`Konfirmasi pengembalian untuk ${selected.length} buku terpilih?`)) return;
+            }
+          }
+
+          const ids = selected.map((b) => Number(b.dataset.id)).filter(Boolean);
+          const originalText = btn.textContent;
+          btn.disabled = true;
+          btn.textContent = 'Memproses...';
+
+          try {
+            const res = await fetch('/api/borrowings/bulk', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ action, ids, markFinePaid }),
+            });
+            const data = await res.json();
+            if (!res.ok) {
+              showFeedback(data.error || 'Gagal menjalankan aksi massal.', true);
+            } else {
+              sessionStorage.setItem('loans_bulk_msg', data.message || 'Aksi massal berhasil.');
+              window.location.reload();
+            }
+          } catch {
+            showFeedback('Terjadi kesalahan jaringan saat memproses aksi massal.', true);
+          } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
+          }
+        });
+      });
+
+      syncUI();
+    }
+
+    initLoansChecklist();
+    document.addEventListener('astro:page-load', initLoansChecklist);
+  </script>
 </AdminLayout>

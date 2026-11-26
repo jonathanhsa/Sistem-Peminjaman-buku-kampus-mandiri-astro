@@ -14,8 +14,16 @@ if (user.role !== 'admin') {
   return Astro.redirect('/katalog');
 }
 
-// Fetch all library books for barcode printing
-const libraryBooks = await db.select().from(schema.items).all();
+// Fetch library books for barcode printing (supports ?codes=LIB-LAR-101,LIB-ALG-102)
+const codesParam = (Astro.url.searchParams.get('codes') || '').trim();
+const selectedCodes = codesParam
+  ? new Set(codesParam.split(',').map((c) => c.trim().toUpperCase()).filter(Boolean))
+  : null;
+
+const allBooks = await db.select().from(schema.items).all();
+const libraryBooks = selectedCodes
+  ? allBooks.filter((b) => selectedCodes.has(b.itemCode.toUpperCase()))
+  : allBooks;
 ---
 
 <!doctype html>
@@ -23,7 +31,7 @@ const libraryBooks = await db.select().from(schema.items).all();
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lembar Cetak Barcode & OCR Buku Perpustakaan — SIPEMBAR</title>
+    <title>Lembar Cetak Barcode & OCR Buku Perpustakaan — SIPUSBA</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -62,12 +70,22 @@ const libraryBooks = await db.select().from(schema.items).all();
               Katalog Label Barcode Buku Perpustakaan (Code 128 + QR Code + OCR)
             </h1>
             <p class="text-xs text-gray-500 mt-0.5">
-              Lembar stiker label untuk ditempel pada buku fisik perpustakaan dan dipindai saat sirkulasi peminjaman mandiri.
+              {selectedCodes
+                ? `Menampilkan ${libraryBooks.length} label buku terpilih untuk dicetak.`
+                : `Lembar stiker label untuk ditempel pada buku fisik perpustakaan (${libraryBooks.length} judul) dan dipindai saat sirkulasi peminjaman mandiri.`}
             </p>
           </div>
         </div>
 
-        <div class="flex items-center gap-2.5 shrink-0">
+        <div class="flex items-center gap-2.5 shrink-0 flex-wrap">
+          {selectedCodes && (
+            <a
+              href="/test-barcode"
+              class="px-4 py-2.5 rounded-2xl bg-gray-100 border border-gray-200 text-gray-700 text-xs font-bold hover:bg-gray-200 transition shadow-2xs"
+            >
+              Tampilkan Semua Buku
+            </a>
+          )}
           <a
             href="/admin/barang"
             class="px-4 py-2.5 rounded-2xl bg-rose-50 border border-rose-200 text-[#FF6B6B] text-xs font-bold hover:bg-rose-100 transition shadow-2xs"
@@ -103,7 +121,9 @@ const libraryBooks = await db.select().from(schema.items).all();
               <h3 class="text-base font-bold text-ink font-display line-clamp-2">
                 {item.name}
               </h3>
-              <p class="text-xs text-gray-500 mt-0.5">Kategori: {item.category}</p>
+              <p class="text-xs text-gray-500 mt-0.5">
+                {[item.author, item.publisher, item.publicationYear].filter(Boolean).join(' • ') || item.category}
+              </p>
             </div>
 
             <!-- Codes Visualization Box -->

@@ -13,7 +13,10 @@ const filteredItems = allItems.filter((i) => {
   const matchesSearch =
     !search ||
     i.name.toLowerCase().includes(search) ||
-    i.itemCode.toLowerCase().includes(search);
+    i.itemCode.toLowerCase().includes(search) ||
+    (i.author || '').toLowerCase().includes(search) ||
+    (i.publisher || '').toLowerCase().includes(search) ||
+    String(i.publicationYear || '').includes(search);
   const isAvailable = i.status === 'available' && i.stock > 0;
   const matchesStatus =
     statusFilter === 'semua' ||
@@ -29,7 +32,7 @@ const statusTabs = [
 ];
 ---
 
-<AdminLayout title="Kelola Buku Perpustakaan — SIPEMBAR Admin" activeNav="barang">
+<AdminLayout title="Kelola Buku Perpustakaan — SIPUSBA Admin" activeNav="barang">
   <div class="space-y-5">
     
     <!-- Top Action & Filter Header Card -->
@@ -99,10 +102,70 @@ const statusTabs = [
             type="text"
             name="q"
             value={search}
-            placeholder="Cari kode atau judul buku..."
+            placeholder="Cari judul, pengarang, penerbit..."
             class="w-full pl-9 pr-3 py-1.5 bg-surface-soft border border-gray-200 rounded-xl text-xs text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-primary focus:bg-white"
           />
         </form>
+      </div>
+
+      <!-- Bulk Feedback Banner -->
+      <div id="books-bulk-feedback" class="hidden px-4 sm:px-6 py-2.5 text-xs font-semibold border-b"></div>
+
+      <!-- Bulk Action Toolbar (Muncul saat ada baris dicentang) -->
+      <div
+        id="books-bulk-bar"
+        class="hidden px-4 sm:px-6 py-3 bg-surface-soft border-b border-gray-200/80 flex flex-wrap items-center justify-between gap-3"
+      >
+        <div class="flex items-center gap-2.5 text-xs">
+          <span class="px-2.5 py-1 rounded-xl bg-primary-light text-primary border border-primary/20 font-bold">
+            <span id="books-selected-count">0</span> dipilih
+          </span>
+          <button
+            type="button"
+            id="books-clear-selection"
+            class="text-gray-500 hover:text-ink font-semibold underline cursor-pointer transition"
+          >
+            Batal pilih
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2 flex-wrap">
+          <button
+            type="button"
+            data-bulk-action="print_barcode"
+            class="px-3 py-1.5 rounded-xl bg-white hover:bg-gray-100 text-ink border border-gray-200 text-xs font-semibold transition cursor-pointer"
+          >
+            Cetak Barcode Terpilih
+          </button>
+          <button
+            type="button"
+            data-bulk-action="add_stock"
+            class="px-3 py-1.5 rounded-xl bg-white hover:bg-gray-100 text-ink border border-gray-200 text-xs font-semibold transition cursor-pointer"
+          >
+            +1 Stok
+          </button>
+          <button
+            type="button"
+            data-bulk-action="set_available"
+            class="px-3 py-1.5 rounded-xl bg-white hover:bg-gray-100 text-ink border border-gray-200 text-xs font-semibold transition cursor-pointer"
+          >
+            Set Tersedia
+          </button>
+          <button
+            type="button"
+            data-bulk-action="set_maintenance"
+            class="px-3 py-1.5 rounded-xl bg-white hover:bg-gray-100 text-ink border border-gray-200 text-xs font-semibold transition cursor-pointer"
+          >
+            Set Perbaikan
+          </button>
+          <button
+            type="button"
+            data-bulk-action="delete"
+            class="px-3 py-1.5 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-bold shadow-xs transition cursor-pointer"
+          >
+            Hapus Terpilih
+          </button>
+        </div>
       </div>
 
       <!-- Table -->
@@ -111,38 +174,57 @@ const statusTabs = [
           <thead>
             <tr class="border-b border-gray-100 text-gray-400 font-bold uppercase tracking-wider text-[11px] bg-surface-soft">
               <th class="py-3.5 px-4 w-10">
-                <input type="checkbox" class="rounded accent-primary focus:ring-0 w-3.5 h-3.5" />
+                <input
+                  id="books-select-all"
+                  type="checkbox"
+                  aria-label="Pilih semua buku"
+                  class="rounded accent-primary focus:ring-0 w-3.5 h-3.5 cursor-pointer"
+                />
               </th>
               <th class="py-3.5 px-4">Kode Buku</th>
-              <th class="py-3.5 px-4">Judul Buku</th>
-              <th class="py-3.5 px-4">Kategori</th>
+              <th class="py-3.5 px-4">Judul & Info Buku</th>
+              <th class="py-3.5 px-4">Penerbit & Tahun</th>
               <th class="py-3.5 px-4">Stok Eksemplar</th>
               <th class="py-3.5 px-4">Status</th>
-              <th class="py-3.5 px-4 text-right">Kelola Stok</th>
+              <th class="py-3.5 px-4 text-right">Kelola</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-50">
             {filteredItems.map((item) => (
-              <tr class="hover:bg-surface-soft transition">
+              <tr class="book-table-row hover:bg-surface-soft transition">
                 <td class="py-3.5 px-4">
-                  <input type="checkbox" class="rounded accent-primary focus:ring-0 w-3.5 h-3.5" />
+                  <input
+                    type="checkbox"
+                    data-id={item.id}
+                    data-code={item.itemCode}
+                    aria-label={`Pilih ${item.name}`}
+                    class="book-row-checkbox rounded accent-primary focus:ring-0 w-3.5 h-3.5 cursor-pointer"
+                  />
                 </td>
                 <td class="py-3.5 px-4 font-mono font-bold text-primary">
                   #{item.itemCode}
                 </td>
                 <td class="py-3.5 px-4">
                   <div class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-800 flex items-center justify-center shrink-0">
+                    <div class="w-8 h-8 rounded-lg bg-primary-light text-primary flex items-center justify-center shrink-0">
                       <CategoryIcon category={item.category} size={16} />
                     </div>
-                    <span class="font-bold text-ink max-w-xs block truncate" title={item.name}>
-                      {item.name}
-                    </span>
+                    <div class="min-w-0">
+                      <span class="font-bold text-ink max-w-xs block truncate" title={item.name}>
+                        {item.name}
+                      </span>
+                      <span class="text-[11px] text-gray-500 block truncate max-w-xs">
+                        {item.author || 'Pengarang belum diisi'}
+                      </span>
+                    </div>
                   </div>
                 </td>
                 <td class="py-3.5 px-4">
-                  <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-gray-100 text-gray-600 font-medium text-[11px]">
-                    Buku Perpustakaan
+                  <span class="font-medium text-gray-700 block truncate max-w-[160px]" title={item.publisher || ''}>
+                    {item.publisher || '-'}
+                  </span>
+                  <span class="text-[11px] text-gray-400 font-mono">
+                    {item.publicationYear ? `Tahun ${item.publicationYear}` : 'Tahun -'}
                   </span>
                 </td>
                 <td class="py-3.5 px-4 font-semibold text-gray-700">
@@ -192,6 +274,25 @@ const statusTabs = [
                       </button>
                     </form>
 
+                    <!-- Edit detail buku button -->
+                    <button
+                      type="button"
+                      class="edit-book-btn p-1.5 rounded-lg text-gray-400 hover:text-ink hover:bg-gray-100 transition cursor-pointer"
+                      title="Edit Detail Buku"
+                      data-id={item.id}
+                      data-code={item.itemCode}
+                      data-name={item.name}
+                      data-author={item.author || ''}
+                      data-publisher={item.publisher || ''}
+                      data-year={item.publicationYear || ''}
+                      data-stock={item.stock}
+                      data-status={item.status}
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                    </button>
+
                     <!-- Delete item -->
                     <form
                       method="POST"
@@ -233,4 +334,296 @@ const statusTabs = [
       </div>
     </div>
   </div>
+
+  <!-- Modal Edit Detail Buku -->
+  <div
+    id="edit-book-modal"
+    role="dialog"
+    aria-modal="true"
+    class="fixed inset-0 z-50 bg-black/45 backdrop-blur-xs hidden items-center justify-center p-4"
+  >
+    <div class="bg-white rounded-2xl p-6 max-w-lg w-full shadow-2xl border border-gray-100 space-y-5">
+      <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+        <div>
+          <span id="edit-book-code-badge" class="text-[11px] font-mono font-bold text-primary"></span>
+          <h3 class="text-base font-extrabold text-ink">Edit Informasi Buku</h3>
+        </div>
+        <button
+          type="button"
+          id="close-edit-book-modal"
+          class="p-1.5 rounded-lg text-gray-400 hover:text-ink hover:bg-gray-100 cursor-pointer"
+        >
+          ✕
+        </button>
+      </div>
+
+      <form id="edit-book-form" method="POST" action="" class="space-y-3.5">
+        <input type="hidden" name="category" value="Buku Perpustakaan" />
+
+        <div>
+          <label for="edit-name" class="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-1">
+            Judul Buku
+          </label>
+          <input
+            id="edit-name"
+            name="name"
+            type="text"
+            required
+            class="w-full px-3.5 py-2 rounded-xl border border-gray-200 bg-surface-soft text-xs focus:outline-none focus:border-primary focus:bg-white"
+          />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="edit-author" class="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-1">
+              Pengarang
+            </label>
+            <input
+              id="edit-author"
+              name="author"
+              type="text"
+              placeholder="Nama pengarang"
+              class="w-full px-3.5 py-2 rounded-xl border border-gray-200 bg-surface-soft text-xs focus:outline-none focus:border-primary focus:bg-white"
+            />
+          </div>
+
+          <div>
+            <label for="edit-publisher" class="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-1">
+              Penerbit
+            </label>
+            <input
+              id="edit-publisher"
+              name="publisher"
+              type="text"
+              placeholder="Nama penerbit"
+              class="w-full px-3.5 py-2 rounded-xl border border-gray-200 bg-surface-soft text-xs focus:outline-none focus:border-primary focus:bg-white"
+            />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label for="edit-year" class="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-1">
+              Tahun Terbit
+            </label>
+            <input
+              id="edit-year"
+              name="publicationYear"
+              type="number"
+              min="1900"
+              max="2100"
+              class="w-full px-3.5 py-2 rounded-xl border border-gray-200 bg-surface-soft text-xs font-mono focus:outline-none focus:border-primary focus:bg-white"
+            />
+          </div>
+
+          <div>
+            <label for="edit-stock" class="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-1">
+              Stok Eksemplar
+            </label>
+            <input
+              id="edit-stock"
+              name="stock"
+              type="number"
+              min="0"
+              required
+              class="w-full px-3.5 py-2 rounded-xl border border-gray-200 bg-surface-soft text-xs font-mono focus:outline-none focus:border-primary focus:bg-white"
+            />
+          </div>
+
+          <div>
+            <label for="edit-status" class="block text-[11px] font-bold text-gray-700 uppercase tracking-wider mb-1">
+              Status
+            </label>
+            <select
+              id="edit-status"
+              name="status"
+              class="w-full px-3 py-2 rounded-xl border border-gray-200 bg-surface-soft text-xs focus:outline-none focus:border-primary focus:bg-white cursor-pointer"
+            >
+              <option value="available">Tersedia</option>
+              <option value="maintenance">Perbaikan</option>
+              <option value="borrowed">Dipinjam</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-gray-100 flex items-center justify-end gap-2">
+          <button
+            type="button"
+            id="cancel-edit-book-modal"
+            class="px-4 py-2 rounded-xl bg-white hover:bg-gray-100 text-ink border border-gray-200 text-xs font-semibold cursor-pointer"
+          >
+            Batal
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-bold shadow-xs cursor-pointer"
+          >
+            Simpan Perubahan
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function initBooksChecklist() {
+      const selectAll = document.getElementById('books-select-all') as HTMLInputElement | null;
+      const bulkBar = document.getElementById('books-bulk-bar');
+      const countEl = document.getElementById('books-selected-count');
+      const clearBtn = document.getElementById('books-clear-selection');
+      const feedbackEl = document.getElementById('books-bulk-feedback');
+
+      if (!selectAll || !bulkBar || !countEl) return;
+      if (selectAll.dataset.bound === 'true') return;
+      selectAll.dataset.bound = 'true';
+
+      const getCheckboxes = () =>
+        Array.from(document.querySelectorAll<HTMLInputElement>('.book-row-checkbox'));
+
+      const showFeedback = (message: string, isError = false) => {
+        if (!feedbackEl) return;
+        feedbackEl.textContent = message;
+        feedbackEl.className = isError
+          ? 'px-4 sm:px-6 py-2.5 text-xs font-semibold border-b bg-primary-light text-primary-dark border-primary/20'
+          : 'px-4 sm:px-6 py-2.5 text-xs font-semibold border-b bg-surface-soft text-ink border-gray-200';
+      };
+
+      const syncUI = () => {
+        const boxes = getCheckboxes();
+        const checked = boxes.filter((b) => b.checked);
+        const count = checked.length;
+
+        countEl.textContent = String(count);
+        bulkBar.classList.toggle('hidden', count === 0);
+
+        selectAll.checked = boxes.length > 0 && count === boxes.length;
+        selectAll.indeterminate = count > 0 && count < boxes.length;
+
+        boxes.forEach((box) => {
+          const row = box.closest('tr');
+          if (row) {
+            row.classList.toggle('bg-primary-light/35', box.checked);
+          }
+        });
+      };
+
+      selectAll.addEventListener('change', () => {
+        getCheckboxes().forEach((box) => {
+          box.checked = selectAll.checked;
+        });
+        syncUI();
+      });
+
+      getCheckboxes().forEach((box) => {
+        box.addEventListener('change', syncUI);
+      });
+
+      clearBtn?.addEventListener('click', () => {
+        getCheckboxes().forEach((box) => {
+          box.checked = false;
+        });
+        syncUI();
+      });
+
+      bulkBar.querySelectorAll<HTMLButtonElement>('[data-bulk-action]').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const action = btn.dataset.bulkAction;
+          const selected = getCheckboxes().filter((b) => b.checked);
+          if (selected.length === 0 || !action) return;
+
+          if (action === 'print_barcode') {
+            const codes = selected.map((b) => b.dataset.code).filter(Boolean).join(',');
+            window.open(`/test-barcode?codes=${encodeURIComponent(codes)}`, '_blank');
+            return;
+          }
+
+          if (action === 'delete') {
+            const ok = confirm(
+              `Hapus ${selected.length} buku terpilih dari katalog? (Buku yang sedang dipinjam aktif akan otomatis dilewati)`
+            );
+            if (!ok) return;
+          }
+
+          const ids = selected.map((b) => Number(b.dataset.id)).filter(Boolean);
+          const originalText = btn.textContent;
+          btn.disabled = true;
+          btn.textContent = 'Memproses...';
+
+          try {
+            const res = await fetch('/api/items/bulk', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                action,
+                ids,
+                stockDelta: action === 'add_stock' ? 1 : undefined,
+              }),
+            });
+            const data = await res.json();
+            if (!res.ok) {
+              showFeedback(data.error || 'Gagal menjalankan aksi massal.', true);
+            } else {
+              sessionStorage.setItem('books_bulk_msg', data.message || 'Perubahan massal berhasil disimpan.');
+              window.location.reload();
+            }
+          } catch {
+            showFeedback('Terjadi kesalahan jaringan saat memproses aksi massal.', true);
+          } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
+          }
+        });
+      });
+
+      const savedMsg = sessionStorage.getItem('books_bulk_msg');
+      if (savedMsg) {
+        sessionStorage.removeItem('books_bulk_msg');
+        showFeedback(savedMsg, false);
+      }
+
+      syncUI();
+
+      // Modal Edit Detail Buku
+      const modal = document.getElementById('edit-book-modal');
+      const form = document.getElementById('edit-book-form') as HTMLFormElement | null;
+      const codeBadge = document.getElementById('edit-book-code-badge');
+      const nameInput = document.getElementById('edit-name') as HTMLInputElement | null;
+      const authorInput = document.getElementById('edit-author') as HTMLInputElement | null;
+      const publisherInput = document.getElementById('edit-publisher') as HTMLInputElement | null;
+      const yearInput = document.getElementById('edit-year') as HTMLInputElement | null;
+      const stockInput = document.getElementById('edit-stock') as HTMLInputElement | null;
+      const statusSelect = document.getElementById('edit-status') as HTMLSelectElement | null;
+
+      const closeModal = () => {
+        if (!modal) return;
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      };
+
+      document.querySelectorAll<HTMLButtonElement>('.edit-book-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          if (!modal || !form) return;
+          form.action = `/api/items/${btn.dataset.id}/update`;
+          if (codeBadge) codeBadge.textContent = `#${btn.dataset.code || ''}`;
+          if (nameInput) nameInput.value = btn.dataset.name || '';
+          if (authorInput) authorInput.value = btn.dataset.author || '';
+          if (publisherInput) publisherInput.value = btn.dataset.publisher || '';
+          if (yearInput) yearInput.value = btn.dataset.year || '';
+          if (stockInput) stockInput.value = btn.dataset.stock || '0';
+          if (statusSelect) statusSelect.value = btn.dataset.status || 'available';
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+        });
+      });
+
+      document.getElementById('close-edit-book-modal')?.addEventListener('click', closeModal);
+      document.getElementById('cancel-edit-book-modal')?.addEventListener('click', closeModal);
+      modal?.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+    }
+
+    initBooksChecklist();
+    document.addEventListener('astro:page-load', initBooksChecklist);
+  </script>
 </AdminLayout>

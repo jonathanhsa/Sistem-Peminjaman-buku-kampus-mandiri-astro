@@ -17,6 +17,9 @@ export const items = sqliteTable('items', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   itemCode: text('item_code').notNull().unique(),
   name: text('name').notNull(),
+  author: text('author'),
+  publisher: text('publisher'),
+  publicationYear: integer('publication_year'),
   category: text('category').notNull().default('Buku Perpustakaan'), // Kategori tunggal: 'Buku Perpustakaan'
   stock: integer('stock').notNull().default(0),
   status: text('status', { enum: ['available', 'borrowed', 'maintenance'] }).notNull().default('available'),

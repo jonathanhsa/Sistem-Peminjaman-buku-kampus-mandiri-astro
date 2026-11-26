@@ -216,6 +216,11 @@ export const AdminVerification: React.FC = () => {
               </span>
               <h4 className="font-bold text-sm text-ink-deep">{transaction.item.name}</h4>
               <p className="text-xs font-mono text-gray-600">Kode: #{transaction.item.item_code}</p>
+              {(transaction.item.author || transaction.item.publisher || transaction.item.publication_year) && (
+                <p className="text-xs text-gray-500">
+                  {[transaction.item.author, transaction.item.publisher, transaction.item.publication_year].filter(Boolean).join(' • ')}
+                </p>
+              )}
               <p className="text-xs text-gray-400">Kategori: {transaction.item.category}</p>
             </div>
           </div>

@@ -4,7 +4,7 @@ import { db, schema } from '../db';
 import { eq, or } from 'drizzle-orm';
 import type { User } from '../db/schema';
 
-const SESSION_COOKIE = 'sipembar_session';
+const SESSION_COOKIE = 'sipusba_session';
 
 export interface SessionData {
   userId: number;

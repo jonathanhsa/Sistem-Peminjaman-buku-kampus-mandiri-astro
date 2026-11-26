@@ -12,7 +12,10 @@ const filteredItems = allItems.filter((item) => {
   const matchesSearch =
     !search ||
     item.name.toLowerCase().includes(search) ||
-    item.itemCode.toLowerCase().includes(search);
+    item.itemCode.toLowerCase().includes(search) ||
+    (item.author || '').toLowerCase().includes(search) ||
+    (item.publisher || '').toLowerCase().includes(search) ||
+    String(item.publicationYear || '').includes(search);
 
   const isAvailable = item.status === 'available' && item.stock > 0;
   const matchesStatus =
@@ -52,7 +55,7 @@ const statusFilters = [
               type="text"
               name="q"
               value={search}
-              placeholder="Cari judul buku atau kode buku..."
+              placeholder="Cari judul, pengarang, penerbit, kode..."
               class="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-gray-50 border border-gray-200 text-xs focus:outline-none focus:border-primary focus:bg-white transition"
             />
             <svg class="w-4 h-4 text-gray-400 absolute left-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -125,14 +128,21 @@ const statusFilters = [
                 </div>
 
                 <div class="flex items-start gap-3">
-                  <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-800 flex items-center justify-center shrink-0 border border-amber-200/50 shadow-2xs">
+                  <div class="w-10 h-10 rounded-2xl bg-primary-light text-primary flex items-center justify-center shrink-0 border border-primary/15 shadow-2xs">
                     <CategoryIcon category={item.category} size={20} />
                   </div>
-                  <div>
+                  <div class="min-w-0 flex-1 space-y-1">
                     <h3 class="font-bold text-sm text-ink line-clamp-2 leading-snug" title={item.name}>
                       {item.name}
                     </h3>
-                    <span class="text-[11px] text-gray-500">Buku Perpustakaan</span>
+                    {item.author && (
+                      <p class="text-xs text-gray-600 font-medium truncate" title={item.author}>
+                        {item.author}
+                      </p>
+                    )}
+                    <p class="text-[11px] text-gray-400 truncate">
+                      {[item.publisher, item.publicationYear].filter(Boolean).join(' • ') || 'Buku Perpustakaan'}
+                    </p>
                   </div>
                 </div>
               </div>

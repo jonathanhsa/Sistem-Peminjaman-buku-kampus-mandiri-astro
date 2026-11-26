@@ -13,6 +13,9 @@ export interface DetectedItemData {
   id: number;
   item_code: string;
   name: string;
+  author?: string | null;
+  publisher?: string | null;
+  publication_year?: number | null;
   category: string;
   stock: number;
   status: string;
@@ -90,6 +93,9 @@ export const BorrowScannerView: React.FC<BorrowScannerViewProps> = ({
           id: data.id,
           item_code: data.item_code,
           name: data.name,
+          author: data.author,
+          publisher: data.publisher,
+          publication_year: data.publication_year,
           category: data.category,
           stock: data.stock,
           status: data.status,
@@ -178,6 +184,11 @@ export const BorrowScannerView: React.FC<BorrowScannerViewProps> = ({
                 <h3 className="font-bold text-sm text-gray-900 leading-snug mt-0.5">
                   {detectedItem.name}
                 </h3>
+                {(detectedItem.author || detectedItem.publisher || detectedItem.publication_year) && (
+                  <p className="text-[11px] text-gray-500 mt-0.5 truncate">
+                    {[detectedItem.author, detectedItem.publisher, detectedItem.publication_year].filter(Boolean).join(' • ')}
+                  </p>
+                )}
                 <div className="mt-2 flex items-center gap-2">
                   {detectedItem.is_available ? (
                     <span className="text-[11px] font-bold text-emerald-700 bg-emerald-100/80 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1">
@@ -329,7 +340,7 @@ export const BorrowScannerView: React.FC<BorrowScannerViewProps> = ({
                   type="text"
                   value={manualCode}
                   onChange={(e) => setManualCode(e.target.value)}
-                  placeholder="Contoh: LIB-LAR-101"
+                  placeholder="Contoh: LIB-PWMD-001"
                   className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-2xl text-xs uppercase font-mono tracking-wider focus:outline-none focus:border-primary focus:bg-white transition"
                 />
                 <button
@@ -418,7 +429,7 @@ export const BorrowScannerView: React.FC<BorrowScannerViewProps> = ({
               type="text"
               value={manualCode}
               onChange={(e) => setManualCode(e.target.value)}
-              placeholder="Contoh: LIB-LAR-101"
+              placeholder="Contoh: LIB-PWMD-001"
               className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-2xl text-xs uppercase font-mono tracking-wider focus:outline-none focus:border-primary focus:bg-white transition"
             />
             <button

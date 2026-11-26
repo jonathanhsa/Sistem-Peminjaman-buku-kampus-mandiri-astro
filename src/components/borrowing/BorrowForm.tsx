@@ -346,7 +346,7 @@ export const BorrowForm: React.FC<BorrowFormProps> = ({
                       type="text"
                       value={manualCodeInput}
                       onChange={(e) => setManualCodeInput(e.target.value)}
-                      placeholder="Contoh: LIB-LAR-101"
+                      placeholder="Contoh: LIB-PWMD-001"
                       className="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs uppercase font-mono tracking-wider focus:outline-none focus:border-indigo-brand focus:bg-white"
                     />
                     <button
@@ -669,7 +669,7 @@ export const BorrowForm: React.FC<BorrowFormProps> = ({
                   type="text"
                   value={manualCodeInput}
                   onChange={(e) => setManualCodeInput(e.target.value)}
-                  placeholder="Contoh: LIB-LAR-101"
+                  placeholder="Contoh: LIB-PWMD-001"
                   className="w-full px-3.5 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs uppercase font-mono tracking-wider focus:outline-none focus:border-indigo-brand"
                 />
                 <button

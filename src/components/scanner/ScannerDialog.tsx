@@ -19,7 +19,7 @@ export const ScannerDialog: React.FC<ScannerDialogProps> = ({
   onDetected,
   title = 'Scan Barcode / QR Buku',
   description = 'Arahkan kamera ke barcode atau label punggung buku perpustakaan',
-  placeholder = 'LIB-LAR-101 / PJM-...',
+  placeholder = 'LIB-PWMD-001 / PJM-...',
 }) => {
   const [manualCode, setManualCode] = useState('');
   const [manualMode, setManualMode] = useState(false);

@@ -20,6 +20,9 @@ export interface BorrowConfirmFormProps {
   item: {
     id: number;
     name: string;
+    author?: string | null;
+    publisher?: string | null;
+    publication_year?: number | null;
     item_code: string;
     category: string;
     stock: number;
@@ -183,6 +186,9 @@ export const BorrowConfirmForm: React.FC<BorrowConfirmFormProps> = ({
           item={{
             itemCode: item.item_code,
             name: item.name,
+            author: item.author,
+            publisher: item.publisher,
+            publicationYear: item.publication_year,
             category: item.category,
           }}
         />
@@ -248,7 +254,7 @@ export const BorrowConfirmForm: React.FC<BorrowConfirmFormProps> = ({
               <div className="w-8 h-8 rounded-xl bg-amber-50 border border-amber-200/60 flex items-center justify-center shadow-2xs">
                 <Mascot mood="happy" size={22} />
               </div>
-              <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">SIPEMBAR Kampus</span>
+              <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">SIPUSBA Kampus</span>
             </div>
             
             <h1 className="text-3xl sm:text-4xl font-extrabold text-ink tracking-tight font-display">
@@ -303,6 +309,11 @@ export const BorrowConfirmForm: React.FC<BorrowConfirmFormProps> = ({
                     <h3 className="font-bold text-base text-gray-900 mt-1">
                       {item.name}
                     </h3>
+                    {(item.author || item.publisher || item.publication_year) && (
+                      <p className="text-xs text-gray-500 mt-0.5">
+                        {[item.author, item.publisher, item.publication_year].filter(Boolean).join(' • ')}
+                      </p>
+                    )}
                     {item.location && (
                       <p className="text-[11px] text-gray-400 mt-0.5">
                         Lokasi: {item.location}

@@ -25,6 +25,9 @@ export interface QrReceiptProps {
   item: {
     itemCode: string;
     name: string;
+    author?: string | null;
+    publisher?: string | null;
+    publicationYear?: number | null;
     category: string;
   };
 }
@@ -124,7 +127,7 @@ export const QrReceipt: React.FC<QrReceiptProps> = ({ borrowing, user, item }) =
                   ? 'Scan QR di Loket Petugas'
                   : isReturned
                   ? 'Pengembalian Selesai'
-                  : 'SIPEMBAR Kampus'}
+                  : 'SIPUSBA Kampus'}
               </h2>
               <p className="text-xs text-gray-200 mt-1">
                 {isReturnMode
@@ -211,6 +214,20 @@ export const QrReceipt: React.FC<QrReceiptProps> = ({ borrowing, user, item }) =
                   <span className="text-gray-500">Kode Buku:</span>
                   <span className="font-mono text-xs bg-gray-100 px-2 py-0.5 rounded-md text-gray-700">{item.itemCode}</span>
                 </div>
+                {item.author && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Pengarang:</span>
+                    <span className="font-medium text-right text-gray-800 max-w-[200px] truncate">{item.author}</span>
+                  </div>
+                )}
+                {(item.publisher || item.publicationYear) && (
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Penerbit / Tahun:</span>
+                    <span className="font-medium text-right text-gray-800 max-w-[200px] truncate">
+                      {[item.publisher, item.publicationYear].filter(Boolean).join(' • ')}
+                    </span>
+                  </div>
+                )}
                 <div className="flex justify-between">
                   <span className="text-gray-500">Kategori:</span>
                   <span className="font-medium text-right text-ink font-semibold">{item.category}</span>
@@ -374,6 +391,11 @@ export const QrReceipt: React.FC<QrReceiptProps> = ({ borrowing, user, item }) =
                       {item.name}
                     </h4>
                     <p className="text-xs font-mono text-gray-600">Kode: #{item.itemCode}</p>
+                    {(item.author || item.publisher || item.publicationYear) && (
+                      <p className="text-xs text-gray-500 truncate">
+                        {[item.author, item.publisher, item.publicationYear].filter(Boolean).join(' • ')}
+                      </p>
+                    )}
                     <p className="text-xs text-gray-400">Kategori: {item.category}</p>
                   </div>
                 </div>
@@ -554,10 +576,10 @@ export const QrReceipt: React.FC<QrReceiptProps> = ({ borrowing, user, item }) =
             UNIT PELAKSANA TEKNIS (UPT) PERPUSTAKAAN KAMPUS
           </h1>
           <p className="text-[11px] text-gray-800">
-            Sistem Peminjaman Buku Perpustakaan Mandiri (SIPEMBAR) — Gedung Perpustakaan Terpadu Lt. 1
+            Sistem Peminjaman Buku Perpustakaan Mandiri (SIPUSBA) — Gedung Perpustakaan Terpadu Lt. 1
           </p>
           <p className="text-[10px] text-gray-600">
-            Website: sipembar.kampus.ac.id | Email: perpustakaan@kampus.ac.id | Hotline Loket: (021) 555-0199
+            Website: sipusba.kampus.ac.id | Email: perpustakaan@kampus.ac.id | Hotline Loket: (021) 555-0199
           </p>
         </div>
         <div className="border-b border-black mb-4"></div>
@@ -630,6 +652,22 @@ export const QrReceipt: React.FC<QrReceiptProps> = ({ borrowing, user, item }) =
                   <td className="text-center">:</td>
                   <td className="font-mono font-bold text-black py-1">{item.itemCode}</td>
                 </tr>
+                {item.author && (
+                  <tr>
+                    <td className="text-gray-600 py-1 font-medium">Pengarang</td>
+                    <td className="text-center">:</td>
+                    <td className="text-black py-1">{item.author}</td>
+                  </tr>
+                )}
+                {(item.publisher || item.publicationYear) && (
+                  <tr>
+                    <td className="text-gray-600 py-1 font-medium">Penerbit / Thn</td>
+                    <td className="text-center">:</td>
+                    <td className="text-black py-1">
+                      {[item.publisher, item.publicationYear].filter(Boolean).join(' / ')}
+                    </td>
+                  </tr>
+                )}
                 <tr>
                   <td className="text-gray-600 py-1 font-medium">Kategori</td>
                   <td className="text-center">:</td>

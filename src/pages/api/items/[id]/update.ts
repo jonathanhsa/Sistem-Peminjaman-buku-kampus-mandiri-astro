@@ -16,7 +16,7 @@ export const POST: APIRoute = async ({ params, request, cookies, redirect }) => 
   const formData = await request.formData();
   const name = formData.get('name')?.toString().trim() || '';
   const category = 'Buku Perpustakaan';
-  const stock = parseInt(formData.get('stock')?.toString() || '0', 10);
+  const stock = Math.max(0, parseInt(formData.get('stock')?.toString() || '0', 10) || 0);
   const status = (formData.get('status')?.toString() || 'available') as 'available' | 'borrowed' | 'maintenance';
 
   if (!name) {
@@ -26,13 +26,27 @@ export const POST: APIRoute = async ({ params, request, cookies, redirect }) => 
     });
   }
 
+  const updateData: Record<string, any> = {
+    name,
+    category,
+    stock,
+    status,
+  };
+
+  if (formData.has('author')) {
+    updateData.author = formData.get('author')?.toString().trim() || null;
+  }
+  if (formData.has('publisher')) {
+    updateData.publisher = formData.get('publisher')?.toString().trim() || null;
+  }
+  if (formData.has('publicationYear')) {
+    const rawYear = formData.get('publicationYear')?.toString().trim() || '';
+    const parsedYear = rawYear ? parseInt(rawYear, 10) : null;
+    updateData.publicationYear = parsedYear && !isNaN(parsedYear) ? parsedYear : null;
+  }
+
   await db.update(schema.items)
-    .set({
-      name,
-      category,
-      stock,
-      status,
-    })
+    .set(updateData)
     .where(eq(schema.items.id, id))
     .run();
 

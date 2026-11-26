@@ -90,7 +90,7 @@ const hourlyStats = [
 ];
 ---
 
-<AdminLayout title="Dasbor — SIPEMBAR Admin" activeNav="dashboard">
+<AdminLayout title="Dasbor — SIPUSBA Admin" activeNav="dashboard">
   <div class="space-y-6">
 
     <!-- ============================================================ -->
@@ -321,6 +321,7 @@ const hourlyStats = [
           
           <div class="relative w-full sm:w-56">
             <input
+              id="dash-recent-search"
               type="text"
               placeholder="Cari peminjaman di sini..."
               class="w-full pl-3 pr-8 py-1.5 bg-surface-soft border border-gray-200 rounded-xl text-xs text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-primary"
@@ -331,13 +332,66 @@ const hourlyStats = [
           </div>
         </div>
 
+        <!-- Bulk Feedback Banner -->
+        <div id="dash-bulk-feedback" class="hidden px-3.5 py-2 rounded-xl text-xs font-semibold border"></div>
+
+        <!-- Bulk Action Toolbar -->
+        <div
+          id="dash-bulk-bar"
+          class="hidden px-3.5 py-2.5 rounded-xl bg-surface-soft border border-gray-200/80 flex flex-wrap items-center justify-between gap-2.5"
+        >
+          <div class="flex items-center gap-2 text-xs">
+            <span class="px-2 py-0.5 rounded-lg bg-primary-light text-primary border border-primary/20 font-bold">
+              <span id="dash-selected-count">0</span> dipilih
+            </span>
+            <button
+              type="button"
+              id="dash-clear-selection"
+              class="text-gray-500 hover:text-ink font-semibold underline cursor-pointer transition"
+            >
+              Batal
+            </button>
+          </div>
+
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <button
+              type="button"
+              id="dash-bulk-approve"
+              data-dash-bulk="approve"
+              class="hidden px-2.5 py-1 rounded-lg bg-primary-light hover:bg-primary-active text-primary border border-primary/20 text-[11px] font-bold transition cursor-pointer"
+            >
+              Setujui Terpilih
+            </button>
+            <button
+              type="button"
+              id="dash-bulk-return"
+              data-dash-bulk="return"
+              class="hidden px-2.5 py-1 rounded-lg bg-primary hover:bg-primary-hover text-white text-[11px] font-bold shadow-xs transition cursor-pointer"
+            >
+              Kembalikan Terpilih
+            </button>
+            <button
+              type="button"
+              data-dash-bulk="export_csv"
+              class="px-2.5 py-1 rounded-lg bg-white hover:bg-gray-100 text-ink border border-gray-200 text-[11px] font-semibold transition cursor-pointer"
+            >
+              Ekspor CSV
+            </button>
+          </div>
+        </div>
+
         <!-- Table View with Pixel-Perfect Column Alignment (All Columns Visible) -->
         <div class="overflow-x-auto">
           <table class="w-full text-xs">
             <thead>
               <tr class="border-b border-gray-100 text-gray-400 font-bold uppercase tracking-wider text-[11px]">
                 <th class="py-3 px-1.5 w-8 text-center">
-                  <input type="checkbox" class="rounded accent-primary focus:ring-0 w-3.5 h-3.5 mx-auto block cursor-pointer" />
+                  <input
+                    id="dash-select-all"
+                    type="checkbox"
+                    aria-label="Pilih semua peminjaman terbaru"
+                    class="rounded accent-primary focus:ring-0 w-3.5 h-3.5 mx-auto block cursor-pointer"
+                  />
                 </th>
                 <th class="py-3 px-2 text-left whitespace-nowrap w-24">Kode Pinjam</th>
                 <th class="py-3 px-2.5 text-left whitespace-nowrap">Judul Buku</th>
@@ -349,9 +403,23 @@ const hourlyStats = [
             </thead>
             <tbody class="divide-y divide-gray-50">
               {recentBorrowings.map((b) => (
-                <tr class="hover:bg-surface-soft transition">
+                <tr
+                  class="dash-table-row hover:bg-surface-soft transition"
+                  data-search={`${b.borrowingCode} ${b.item.name} ${b.user.name} ${b.user.nim_nip}`.toLowerCase()}
+                >
                   <td class="py-3 px-1.5 text-center align-middle">
-                    <input type="checkbox" class="rounded accent-primary focus:ring-0 w-3.5 h-3.5 mx-auto block cursor-pointer" />
+                    <input
+                      type="checkbox"
+                      data-id={b.id}
+                      data-code={b.borrowingCode}
+                      data-user={`${b.user.name} (${b.user.nim_nip})`}
+                      data-book={b.item.name}
+                      data-status={b.status}
+                      data-fine={b.fineAmount}
+                      data-fine-paid={b.finePaidAt ? '1' : '0'}
+                      aria-label={`Pilih transaksi ${b.borrowingCode}`}
+                      class="dash-row-checkbox rounded accent-primary focus:ring-0 w-3.5 h-3.5 mx-auto block cursor-pointer"
+                    />
                   </td>
                   <td class="py-3 px-2 text-left font-mono font-bold text-primary whitespace-nowrap align-middle">
                     <a href={`/riwayat/${b.borrowingCode}`} target="_blank" class="hover:underline">
@@ -500,4 +568,177 @@ const hourlyStats = [
     </div>
 
   </div>
+
+  <script>
+    function initDashboardChecklist() {
+      const selectAll = document.getElementById('dash-select-all') as HTMLInputElement | null;
+      const bulkBar = document.getElementById('dash-bulk-bar');
+      const countEl = document.getElementById('dash-selected-count');
+      const clearBtn = document.getElementById('dash-clear-selection');
+      const approveBtn = document.getElementById('dash-bulk-approve');
+      const returnBtn = document.getElementById('dash-bulk-return');
+      const feedbackEl = document.getElementById('dash-bulk-feedback');
+      const searchInput = document.getElementById('dash-recent-search') as HTMLInputElement | null;
+
+      if (!selectAll || !bulkBar || !countEl) return;
+      if (selectAll.dataset.bound === 'true') return;
+      selectAll.dataset.bound = 'true';
+
+      const getVisibleCheckboxes = () =>
+        Array.from(document.querySelectorAll<HTMLInputElement>('.dash-row-checkbox')).filter((b) => {
+          const row = b.closest('tr');
+          return row && !row.classList.contains('hidden');
+        });
+
+      const showFeedback = (message: string, isError = false) => {
+        if (!feedbackEl) return;
+        feedbackEl.textContent = message;
+        feedbackEl.className = isError
+          ? 'px-3.5 py-2 rounded-xl text-xs font-semibold border bg-primary-light text-primary-dark border-primary/20'
+          : 'px-3.5 py-2 rounded-xl text-xs font-semibold border bg-surface-soft text-ink border-gray-200';
+      };
+
+      const syncUI = () => {
+        const boxes = getVisibleCheckboxes();
+        const checked = boxes.filter((b) => b.checked);
+        const count = checked.length;
+
+        countEl.textContent = String(count);
+        bulkBar.classList.toggle('hidden', count === 0);
+
+        selectAll.checked = boxes.length > 0 && count === boxes.length;
+        selectAll.indeterminate = count > 0 && count < boxes.length;
+
+        const hasPending = checked.some((b) => b.dataset.status === 'pending');
+        const hasActive = checked.some((b) =>
+          ['borrowed', 'overdue', 'return_pending'].includes(b.dataset.status || '')
+        );
+        approveBtn?.classList.toggle('hidden', !hasPending);
+        returnBtn?.classList.toggle('hidden', !hasActive);
+
+        document.querySelectorAll<HTMLInputElement>('.dash-row-checkbox').forEach((box) => {
+          const row = box.closest('tr');
+          if (row) row.classList.toggle('bg-primary-light/35', box.checked);
+        });
+      };
+
+      selectAll.addEventListener('change', () => {
+        getVisibleCheckboxes().forEach((box) => {
+          box.checked = selectAll.checked;
+        });
+        syncUI();
+      });
+
+      document.querySelectorAll<HTMLInputElement>('.dash-row-checkbox').forEach((box) => {
+        box.addEventListener('change', syncUI);
+      });
+
+      clearBtn?.addEventListener('click', () => {
+        document.querySelectorAll<HTMLInputElement>('.dash-row-checkbox').forEach((box) => {
+          box.checked = false;
+        });
+        syncUI();
+      });
+
+      searchInput?.addEventListener('input', () => {
+        const q = searchInput.value.trim().toLowerCase();
+        document.querySelectorAll<HTMLTableRowElement>('.dash-table-row').forEach((row) => {
+          const haystack = row.dataset.search || '';
+          const match = !q || haystack.includes(q);
+          row.classList.toggle('hidden', !match);
+          if (!match) {
+            const cb = row.querySelector<HTMLInputElement>('.dash-row-checkbox');
+            if (cb) cb.checked = false;
+          }
+        });
+        syncUI();
+      });
+
+      bulkBar.querySelectorAll<HTMLButtonElement>('[data-dash-bulk]').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const action = btn.dataset.dashBulk;
+          const selected = getVisibleCheckboxes().filter((b) => b.checked);
+          if (selected.length === 0 || !action) return;
+
+          if (action === 'export_csv') {
+            const rows = [['"Kode Pinjam"', '"Peminjam"', '"Judul Buku"', '"Status"', '"Denda"'].join(',')];
+            selected.forEach((b) => {
+              const vals = [
+                b.dataset.code || '',
+                b.dataset.user || '',
+                b.dataset.book || '',
+                b.dataset.status || '',
+                `Rp ${Number(b.dataset.fine || 0).toLocaleString('id-ID')}`,
+              ].map((v) => '"' + v.replace(/"/g, '""') + '"');
+              rows.push(vals.join(','));
+            });
+            const csv = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(rows.join('\n'));
+            const link = document.createElement('a');
+            link.href = csv;
+            link.download = `peminjaman-terbaru-${new Date().toISOString().slice(0, 10)}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showFeedback(`${selected.length} transaksi berhasil diekspor ke CSV.`, false);
+            return;
+          }
+
+          let markFinePaid = false;
+          if (action === 'return') {
+            const activeSelected = selected.filter((b) =>
+              ['borrowed', 'overdue', 'return_pending'].includes(b.dataset.status || '')
+            );
+            const unpaidTotal = activeSelected.reduce((sum, b) => {
+              const fine = Number(b.dataset.fine || 0);
+              const paid = b.dataset.finePaid === '1';
+              return sum + (fine > 0 && !paid ? fine : 0);
+            }, 0);
+            if (unpaidTotal > 0) {
+              const ok = confirm(
+                `Terdapat total denda Rp ${unpaidTotal.toLocaleString('id-ID')} pada buku terpilih. Apakah seluruh denda sudah dibayar lunas?`
+              );
+              if (!ok) return;
+              markFinePaid = true;
+            }
+          }
+
+          const ids = selected.map((b) => Number(b.dataset.id)).filter(Boolean);
+          const originalText = btn.textContent;
+          btn.disabled = true;
+          btn.textContent = 'Memproses...';
+
+          try {
+            const res = await fetch('/api/borrowings/bulk', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ action, ids, markFinePaid }),
+            });
+            const data = await res.json();
+            if (!res.ok) {
+              showFeedback(data.error || 'Gagal menjalankan aksi massal.', true);
+            } else {
+              sessionStorage.setItem('dash_bulk_msg', data.message || 'Aksi massal berhasil.');
+              window.location.reload();
+            }
+          } catch {
+            showFeedback('Terjadi kesalahan jaringan.', true);
+          } finally {
+            btn.disabled = false;
+            btn.textContent = originalText;
+          }
+        });
+      });
+
+      const savedMsg = sessionStorage.getItem('dash_bulk_msg');
+      if (savedMsg) {
+        sessionStorage.removeItem('dash_bulk_msg');
+        showFeedback(savedMsg, false);
+      }
+
+      syncUI();
+    }
+
+    initDashboardChecklist();
+    document.addEventListener('astro:page-load', initDashboardChecklist);
+  </script>
 </AdminLayout>

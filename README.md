@@ -1,4 +1,4 @@
-# 📚 Sistem Peminjaman Buku Perpustakaan Mandiri (SIPEMBAR)
+# 📚 Sistem Peminjaman Buku Perpustakaan Mandiri (SIPUSBA)
 
 Sistem Peminjaman Buku Perpustakaan Mandiri berbasis web modern yang dibangun dengan **Astro**, **React**, **Tailwind CSS v4**, dan **Drizzle ORM**. Mendukung database **SQLite** untuk development lokal dan **Cloudflare D1** untuk deployment serverless di Cloudflare Pages.
 

@@ -1,10 +1,19 @@
 ---
 import AdminLayout from '../../../components/layout/AdminLayout.astro';
+import { db, schema } from '../../../db';
+import { getNextBookSequence } from '../../../lib/book-code';
 
 const error = Astro.url.searchParams.get('error');
+const existingItems = await db
+  .select({ id: schema.items.id, itemCode: schema.items.itemCode })
+  .from(schema.items)
+  .all();
+const nextSequence = getNextBookSequence(existingItems);
+const paddedNextSeq = String(nextSequence).padStart(3, '0');
+const currentYear = new Date().getFullYear();
 ---
 
-<AdminLayout title="Tambah Buku Perpustakaan — SIPEMBAR Admin" activeNav="barang">
+<AdminLayout title="Tambah Buku Perpustakaan — SIPUSBA Admin" activeNav="barang">
   <div class="max-w-2xl mx-auto space-y-5">
     
     <!-- Top Breadcrumb & Header -->
@@ -32,36 +41,12 @@ const error = Astro.url.searchParams.get('error');
     <div class="bg-white rounded-2xl p-6 sm:p-8 border border-gray-100 shadow-[0_2px_12px_rgba(0,0,0,0.02)] space-y-6">
       
       {error && (
-        <div class="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center gap-2">
+        <div class="p-3.5 rounded-xl bg-primary-light border border-primary/20 text-primary-dark text-xs font-semibold flex items-center gap-2">
           <span>⚠️ {error}</span>
         </div>
       )}
 
       <form method="POST" action="/api/items/create" class="space-y-4">
-        <div>
-          <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5" for="itemCode">
-            Kode Unik Buku (Barcode / Nomor Panggil)
-          </label>
-          <input
-            id="itemCode"
-            name="itemCode"
-            type="text"
-            required
-            placeholder="Contoh: LIB-NEW-112"
-            class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 bg-surface-soft text-xs font-mono tracking-wider focus:outline-none focus:border-primary focus:bg-white uppercase transition"
-          />
-          <div class="flex items-center gap-2 mt-2 flex-wrap">
-            <span class="text-[11px] text-gray-400">Awalan standar:</span>
-            <button
-              type="button"
-              onclick="document.getElementById('itemCode').value='LIB-';"
-              class="text-[10px] font-bold px-2.5 py-0.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200/70 hover:bg-amber-100 cursor-pointer"
-            >
-              LIB- (Kode Buku Perpustakaan)
-            </button>
-          </div>
-        </div>
-
         <div>
           <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5" for="name">
             Judul Buku
@@ -71,12 +56,95 @@ const error = Astro.url.searchParams.get('error');
             name="name"
             type="text"
             required
-            placeholder="Contoh: Buku Artificial Intelligence & Deep Learning"
+            placeholder="Contoh: Pemrograman Web Modern"
             class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 bg-surface-soft text-xs focus:outline-none focus:border-primary focus:bg-white transition"
           />
         </div>
 
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider" for="itemCodePreview">
+              Kode Unik Buku (Otomatis)
+            </label>
+            <span class="text-[11px] font-semibold text-primary">
+              Urutan #{paddedNextSeq}
+            </span>
+          </div>
+          <input
+            id="itemCodePreview"
+            type="text"
+            readonly
+            data-next-seq={nextSequence}
+            value={`LIB-BUK-${paddedNextSeq}`}
+            class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 bg-gray-100 text-primary text-xs font-mono font-bold tracking-wider uppercase cursor-not-allowed"
+          />
+          <p class="text-[11px] text-gray-400 mt-1.5">
+            Kode dibuat otomatis dari inisial judul buku dan nomor urutan penambahan (contoh: judul "Aaa Bbbb Ccc" → <span class="font-mono text-gray-600 font-semibold">LIB-ABC-{paddedNextSeq}</span>).
+          </p>
+        </div>
+
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5" for="author">
+              Pengarang / Penulis
+            </label>
+            <input
+              id="author"
+              name="author"
+              type="text"
+              required
+              placeholder="Contoh: Budi Raharjo"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 bg-surface-soft text-xs focus:outline-none focus:border-primary focus:bg-white transition"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5" for="publisher">
+              Penerbit
+            </label>
+            <input
+              id="publisher"
+              name="publisher"
+              type="text"
+              required
+              placeholder="Contoh: Informatika Bandung"
+              class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 bg-surface-soft text-xs focus:outline-none focus:border-primary focus:bg-white transition"
+            />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5" for="publicationYear">
+              Tahun Terbit
+            </label>
+            <input
+              id="publicationYear"
+              name="publicationYear"
+              type="number"
+              min="1900"
+              max={currentYear + 1}
+              value={currentYear}
+              required
+              class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 bg-surface-soft text-xs font-mono focus:outline-none focus:border-primary focus:bg-white transition"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5" for="stock">
+              Stok Eksemplar
+            </label>
+            <input
+              id="stock"
+              name="stock"
+              type="number"
+              min="0"
+              value="5"
+              required
+              class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 bg-surface-soft text-xs font-mono focus:outline-none focus:border-primary focus:bg-white transition"
+            />
+          </div>
+
           <div>
             <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5" for="categoryDisplay">
               Kategori
@@ -88,21 +156,6 @@ const error = Astro.url.searchParams.get('error');
               value="Buku Perpustakaan"
               readonly
               class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 bg-gray-100 text-gray-600 text-xs font-semibold cursor-not-allowed"
-            />
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1.5" for="stock">
-              Jumlah Stok Eksemplar
-            </label>
-            <input
-              id="stock"
-              name="stock"
-              type="number"
-              min="0"
-              value="5"
-              required
-              class="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 bg-surface-soft text-xs focus:outline-none focus:border-primary focus:bg-white transition"
             />
           </div>
         </div>
@@ -139,4 +192,49 @@ const error = Astro.url.searchParams.get('error');
       </form>
     </div>
   </div>
+
+  <script>
+    function initAutoBookCode() {
+      const nameInput = document.getElementById('name') as HTMLInputElement | null;
+      const codePreview = document.getElementById('itemCodePreview') as HTMLInputElement | null;
+      if (!nameInput || !codePreview) return;
+      if (nameInput.dataset.bound === 'true') return;
+      nameInput.dataset.bound = 'true';
+
+      const seqNum = parseInt(codePreview.dataset.nextSeq || '1', 10) || 1;
+      const paddedSeq = String(seqNum).padStart(3, '0');
+
+      const updateCode = () => {
+        const cleaned = (nameInput.value || '')
+          .normalize('NFKD')
+          .replace(/[^\w\s]/g, ' ')
+          .replace(/_/g, ' ')
+          .trim();
+
+        const words = cleaned
+          .split(/\s+/)
+          .map((w) => w.replace(/[^a-zA-Z0-9]/g, ''))
+          .filter((w) => w.length > 0);
+
+        let initials = 'BUK';
+        if (words.length === 1) {
+          initials = words[0].slice(0, 3).toUpperCase();
+        } else if (words.length > 1) {
+          initials = words
+            .slice(0, 4)
+            .map((w) => w[0])
+            .join('')
+            .toUpperCase();
+        }
+
+        codePreview.value = `LIB-${initials}-${paddedSeq}`;
+      };
+
+      nameInput.addEventListener('input', updateCode);
+      updateCode();
+    }
+
+    initAutoBookCode();
+    document.addEventListener('astro:page-load', initAutoBookCode);
+  </script>
 </AdminLayout>

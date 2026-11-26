@@ -12,7 +12,7 @@ interface Props {
   activeNav?: 'dashboard' | 'barang' | 'peminjaman' | 'verifikasi' | 'laporan' | 'test-barcode';
 }
 
-const { title = 'Dasbor Admin — SIPEMBAR', activeNav = 'dashboard' } = Astro.props;
+const { title = 'Dasbor Admin — SIPUSBA', activeNav = 'dashboard' } = Astro.props;
 
 const user = await getCurrentUser(Astro.cookies);
 if (!user) {
@@ -132,7 +132,7 @@ const totalNotifCount = adminNotifs.length;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title} — SIPEMBAR Admin</title>
+    <title>{title} — SIPUSBA Admin</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -166,7 +166,7 @@ const totalNotifCount = adminNotifs.length;
               </svg>
             </div>
             <div class="hidden lg:block">
-              <span class="text-base font-extrabold tracking-tight text-ink block leading-none">SIPEMBAR</span>
+              <span class="text-base font-extrabold tracking-tight text-ink block leading-none">SIPUSBA</span>
               <span class="text-[10px] font-bold text-primary uppercase tracking-wider">Admin Perpustakaan</span>
             </div>
           </a>
@@ -485,7 +485,7 @@ const totalNotifCount = adminNotifs.length;
               <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white font-bold text-sm shadow-xs">
                 S
               </div>
-              <span class="font-extrabold text-sm text-gray-900">SIPEMBAR Admin</span>
+              <span class="font-extrabold text-sm text-gray-900">SIPUSBA Admin</span>
             </div>
             <button id="close-drawer-btn" class="p-1 rounded-lg text-gray-400 hover:text-gray-700 cursor-pointer">
               ✕

@@ -34,24 +34,24 @@ export const SEED_USERS = [
 
 export const SEED_ITEMS = [
   // Koleksi Buku Perpustakaan (Kategori Tunggal: Buku Perpustakaan)
-  { itemCode: 'LIB-LAR-101', name: 'Buku Pemrograman Web Modern dengan Laravel', category: 'Buku Perpustakaan', stock: 8, status: 'available' as const },
-  { itemCode: 'LIB-ALG-102', name: 'Buku Struktur Data & Algoritma Tingkat Lanjut', category: 'Buku Perpustakaan', stock: 4, status: 'available' as const },
-  { itemCode: 'LIB-ML-103', name: 'Buku Artificial Intelligence & Deep Learning', category: 'Buku Perpustakaan', stock: 6, status: 'available' as const },
-  { itemCode: 'LIB-DB-104', name: 'Buku Perancangan Basis Data Relasional & NoSQL', category: 'Buku Perpustakaan', stock: 5, status: 'available' as const },
-  { itemCode: 'LIB-NET-105', name: 'Buku Jaringan Komputer & Keamanan Siber', category: 'Buku Perpustakaan', stock: 7, status: 'available' as const },
-  { itemCode: 'LIB-UIX-106', name: 'Buku Desain UI/UX & Interaksi Manusia Komputer', category: 'Buku Perpustakaan', stock: 6, status: 'available' as const },
-  { itemCode: 'LIB-OS-107', name: 'Buku Konsep Sistem Operasi & Arsitektur Linux', category: 'Buku Perpustakaan', stock: 3, status: 'available' as const },
-  { itemCode: 'LIB-IOT-108', name: 'Buku Robotika Cerdas & Internet of Things (IoT)', category: 'Buku Perpustakaan', stock: 4, status: 'available' as const },
-  { itemCode: 'LIB-SE-109', name: 'Buku Rekayasa Perangkat Lunak & Pola Desain', category: 'Buku Perpustakaan', stock: 5, status: 'available' as const },
-  { itemCode: 'LIB-STAT-110', name: 'Buku Statistika Probabilitas & Komputasi Sains Data', category: 'Buku Perpustakaan', stock: 5, status: 'available' as const },
-  { itemCode: 'LIB-CLN-111', name: 'Buku Clean Code & Arsitektur Perangkat Lunak (Sedang Dijilid)', category: 'Buku Perpustakaan', stock: 0, status: 'maintenance' as const },
+  { itemCode: 'LIB-PWMD-001', name: 'Pemrograman Web Modern dengan Laravel', author: 'Budi Raharjo', publisher: 'Informatika Bandung', publicationYear: 2024, category: 'Buku Perpustakaan', stock: 8, status: 'available' as const },
+  { itemCode: 'LIB-SDAT-002', name: 'Struktur Data & Algoritma Tingkat Lanjut', author: 'Rinaldi Munir', publisher: 'Informatika Bandung', publicationYear: 2023, category: 'Buku Perpustakaan', stock: 4, status: 'available' as const },
+  { itemCode: 'LIB-AIDL-003', name: 'Artificial Intelligence & Deep Learning', author: 'Suyanto', publisher: 'Penerbit Andi', publicationYear: 2024, category: 'Buku Perpustakaan', stock: 6, status: 'available' as const },
+  { itemCode: 'LIB-PBDR-004', name: 'Perancangan Basis Data Relasional & NoSQL', author: 'Fathansyah', publisher: 'Informatika Bandung', publicationYear: 2022, category: 'Buku Perpustakaan', stock: 5, status: 'available' as const },
+  { itemCode: 'LIB-JKKS-005', name: 'Jaringan Komputer & Keamanan Siber', author: 'Iwan Sofana', publisher: 'Informatika Bandung', publicationYear: 2023, category: 'Buku Perpustakaan', stock: 7, status: 'available' as const },
+  { itemCode: 'LIB-DUIM-006', name: 'Desain UI/UX & Interaksi Manusia Komputer', author: 'Rizki Pratama', publisher: 'Elex Media Komputindo', publicationYear: 2024, category: 'Buku Perpustakaan', stock: 6, status: 'available' as const },
+  { itemCode: 'LIB-KSOA-007', name: 'Konsep Sistem Operasi & Arsitektur Linux', author: 'Abdul Kadir', publisher: 'Penerbit Andi', publicationYear: 2021, category: 'Buku Perpustakaan', stock: 3, status: 'available' as const },
+  { itemCode: 'LIB-RCIT-008', name: 'Robotika Cerdas & Internet of Things (IoT)', author: 'Yuwono Marta Dinata', publisher: 'Elex Media Komputindo', publicationYear: 2023, category: 'Buku Perpustakaan', stock: 4, status: 'available' as const },
+  { itemCode: 'LIB-RPLP-009', name: 'Rekayasa Perangkat Lunak & Pola Desain', author: 'Rosa A. S. & M. Shalahuddin', publisher: 'Informatika Bandung', publicationYear: 2022, category: 'Buku Perpustakaan', stock: 5, status: 'available' as const },
+  { itemCode: 'LIB-SPKS-010', name: 'Statistika Probabilitas & Komputasi Sains Data', author: 'Dr. Riduwan', publisher: 'Alfabeta', publicationYear: 2023, category: 'Buku Perpustakaan', stock: 5, status: 'available' as const },
+  { itemCode: 'LIB-CCAP-011', name: 'Clean Code & Arsitektur Perangkat Lunak', author: 'Robert C. Martin', publisher: 'Prentice Hall', publicationYear: 2020, category: 'Buku Perpustakaan', stock: 0, status: 'maintenance' as const },
 ];
 
 export const SEED_BORROWINGS = [
   {
     borrowingCode: 'PJM-20261001-A7K2',
     userNim: '220101001',
-    itemCode: 'LIB-ML-103',
+    itemCode: 'LIB-AIDL-003',
     borrowDate: '2026-10-04T08:00:00Z',
     dueDate: '2026-10-11T17:00:00Z',
     status: 'borrowed' as const,
@@ -61,7 +61,7 @@ export const SEED_BORROWINGS = [
   {
     borrowingCode: 'PJM-20260920-OVD1',
     userNim: '220101001',
-    itemCode: 'LIB-LAR-101',
+    itemCode: 'LIB-PWMD-001',
     borrowDate: '2026-09-27T08:00:00Z',
     dueDate: '2026-10-04T17:00:00Z',
     status: 'overdue' as const,
@@ -71,7 +71,7 @@ export const SEED_BORROWINGS = [
   {
     borrowingCode: 'PJM-20260910-RET1',
     userNim: '220101002',
-    itemCode: 'LIB-ALG-102',
+    itemCode: 'LIB-SDAT-002',
     borrowDate: '2026-09-21T08:00:00Z',
     dueDate: '2026-09-28T17:00:00Z',
     returnDate: '2026-09-28T14:30:00Z',
@@ -82,7 +82,7 @@ export const SEED_BORROWINGS = [
   {
     borrowingCode: 'PJM-20261005-PND1',
     userNim: '220101002',
-    itemCode: 'LIB-DB-104',
+    itemCode: 'LIB-PBDR-004',
     borrowDate: '2026-10-06T09:00:00Z',
     dueDate: '2026-10-13T17:00:00Z',
     status: 'pending' as const,
@@ -113,6 +113,9 @@ export async function runSeed() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       item_code TEXT NOT NULL UNIQUE,
       name TEXT NOT NULL,
+      author TEXT,
+      publisher TEXT,
+      publication_year INTEGER,
       category TEXT NOT NULL DEFAULT 'Buku Perpustakaan',
       stock INTEGER NOT NULL DEFAULT 0,
       status TEXT NOT NULL DEFAULT 'available',
@@ -199,14 +202,14 @@ export async function runSeed() {
         {
           userId: jonathan.id,
           title: 'Peringatan Keterlambatan',
-          message: 'Peminjaman buku LIB-LAR-101 telah melewati batas pengembalian. Denda Rp 2.000 terhitung.',
+          message: 'Peminjaman buku LIB-PWMD-001 telah melewati batas pengembalian. Denda Rp 2.000 terhitung.',
           type: 'danger',
           isRead: false,
         },
         {
           userId: jonathan.id,
           title: 'Peminjaman Aktif',
-          message: 'Peminjaman Buku Artificial Intelligence & Deep Learning aktif sampai 11 Okt 2026.',
+          message: 'Peminjaman Artificial Intelligence & Deep Learning aktif sampai 11 Okt 2026.',
           type: 'info',
           isRead: true,
         },

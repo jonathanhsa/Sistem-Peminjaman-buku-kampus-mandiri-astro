@@ -49,7 +49,14 @@ export const GET: APIRoute = async ({ params, cookies }) => {
     .get();
 
   const item = await db
-    .select({ item_code: schema.items.itemCode, name: schema.items.name, category: schema.items.category })
+    .select({
+      item_code: schema.items.itemCode,
+      name: schema.items.name,
+      author: schema.items.author,
+      publisher: schema.items.publisher,
+      publication_year: schema.items.publicationYear,
+      category: schema.items.category,
+    })
     .from(schema.items)
     .where(eq(schema.items.id, borrowing.itemId))
     .get();

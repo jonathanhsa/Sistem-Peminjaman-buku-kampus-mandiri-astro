@@ -1,6 +1,6 @@
-# Panduan Deploy SIPEMBAR ke Cloudflare Pages / Workers
+# Panduan Deploy SIPUSBA ke Cloudflare Pages / Workers
 
-Aplikasi **SIPEMBAR (Sistem Peminjaman Barang Mandiri Kampus)** telah disesuaikan agar **100% siap produksi (Production-Ready)** dan kompatibel dengan ekosistem **Cloudflare** (Cloudflare Pages, Workers, dan Database Cloudflare D1).
+Aplikasi **SIPUSBA (Sistem Peminjaman Barang Mandiri Kampus)** telah disesuaikan agar **100% siap produksi (Production-Ready)** dan kompatibel dengan ekosistem **Cloudflare** (Cloudflare Pages, Workers, dan Database Cloudflare D1).
 
 ---
 
@@ -51,7 +51,7 @@ Buka file `wrangler.jsonc` dan masukkan `database_id` Anda:
 ```jsonc
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "sipembar-kampus",
+  "name": "sipusba-kampus",
   "main": "@astrojs/cloudflare/entrypoints/server",
   "compatibility_date": "2026-10-01",
   "compatibility_flags": ["nodejs_compat"],
